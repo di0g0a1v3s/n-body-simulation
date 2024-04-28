@@ -61,6 +61,10 @@ class Planet {
         this.velocity = newVelocity;
         this.position = newPosition;
     }
+
+    collidingWithOther(otherPlanet) {
+        return this.position.diff(otherPlanet.position).magnitudeSquared() < (this.radius + otherPlanet.radius)**2
+    }
 }
 
 class Universe {
@@ -73,7 +77,7 @@ class Universe {
     }
 
     updatePositions(deltaTsinceLastUpdate){
-        const planetsOriginal = this.planets.map(p => new Planet(p.mass, p.position, p.velocity, p.id));
+        let planetsOriginal = this.planets.map(p => new Planet(p.mass, p.position, p.velocity, p.id));
         planetsOriginal.forEach((planet1, indexPlanet1) => {
             let acceleration = new Vector(0,0);
             planetsOriginal.forEach((planet2) => {
@@ -83,6 +87,25 @@ class Universe {
             })
             this.planets[indexPlanet1].updatePositionAndVelocity(acceleration, deltaTsinceLastUpdate);
         })
+
+        // collisions
+        this.planets.forEach((planet1, indexPlanet1) => {
+            if(planet1 == null){
+                return;
+            }
+            this.planets.forEach((planet2, indexPlanet2) => {
+                if(planet2 != null && planet1.id !== planet2.id && planet1.collidingWithOther(planet2)){
+                    const newMass = planet1.mass + planet2.mass;
+                    this.planets[indexPlanet1] = new Planet(
+                        newMass, 
+                        planet1.position, 
+                        planet1.velocity.scalarMultiplication(planet1.mass/newMass).add(planet2.velocity.scalarMultiplication(planet2.mass/newMass)), 
+                        planet1.id)
+                    this.planets[indexPlanet2] = null;
+                }
+            })
+        })
+        this.planets = this.planets.filter(planet => planet != null)
     }
 }
 
@@ -120,9 +143,12 @@ class Canvas {
 }
 
 let universe = new Universe();
-universe.addPlanet(new Planet(10000000, new Vector(500, 300), new Vector(0, -0.16)));
-universe.addPlanet(new Planet(10000000, new Vector(300, 300), new Vector(0, 0.16)));
-// universe.addPlanet(new Planet(30000000, new Vector(1400, 700), new Vector(0, 0)));
+universe.addPlanet(new Planet(20000000, new Vector(500, 300), new Vector(0, -0.16)));
+universe.addPlanet(new Planet(20000000, new Vector(300, 300), new Vector(0, 0.16)));
+universe.addPlanet(new Planet(30000000, new Vector(1400, 700), new Vector(0, 0)));
+universe.addPlanet(new Planet(30000000, new Vector(100, 700), new Vector(0, 0)));
+universe.addPlanet(new Planet(30000000, new Vector(1700, 700), new Vector(0, 0)));
+universe.addPlanet(new Planet(30000000, new Vector(2200, 700), new Vector(0, 0)));
 let canvas = new Canvas(1500, 700)
 
 let previousTimeStamp;

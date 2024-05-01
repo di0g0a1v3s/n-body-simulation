@@ -2,7 +2,7 @@
 function getRandomId() {
     return Math.random() * 100000;
 }
-const COLLISION_TOLERANCE_PERCENTAGE = 200
+const COLLISION_TOLERANCE_PERCENTAGE = 0
 
 class Vector {
     constructor(x,y){
@@ -29,6 +29,106 @@ class Vector {
     magnitude() {
         return Math.sqrt(this.magnitudeSquared());
     }
+
+    static getOrigin(){
+        return new Vector(0,0);
+    }
+}
+
+class RectangleAA {
+    constructor(xMin, yMin, xMax, yMax) {
+        this.xMin = xMin;
+        this.xMax = xMax;
+        this.yMin = yMin;
+        this.yMax = yMax;
+    }
+
+    getCenter(){
+        return new Vector((this.xMax + this.xMin)/2, (this.yMax + this.yMin) / 2);
+    }
+}
+
+class Transform2d {
+    constructor(matrix3d) {
+        this.matrix3d = matrix3d;
+    }
+
+    static getIdentityTransform() {
+        return new Transform2d(new Matrix3d(
+            1, 0, 0,
+            0, 1, 0,
+            0, 0, 1
+        ))
+    }
+
+    static translation(vector) {
+        return new Transform2d(new Matrix3d(
+            1, 0, vector.x,
+            0, 1, vector.y,
+            0, 0, 1
+        ))
+    }
+
+    static scaleAroundOrigin(scaleFactor) {
+        return new Transform2d(new Matrix3d(
+            scaleFactor, 0, 0,
+            0, scaleFactor, 0,
+            0, 0, 1
+        ))
+    }
+
+    static scaleAroundPoint(scaleFactor, point) {
+        // return Transform2d.translation(new Vector(-point.x, -point.y))
+        //     .concat(Transform2d.scaleAroundOrigin(scaleFactor))
+        //         .concat(Transform2d.translation(point));
+        return Transform2d.translation(point)
+            .concat(Transform2d.scaleAroundOrigin(scaleFactor))
+                .concat(Transform2d.translation(new Vector(-point.x, -point.y)));
+    }
+
+    concat(other) {
+        return new Transform2d(this.matrix3d.multiplyWith(other.matrix3d))
+    }
+
+    transformPoint(point) {
+        return new Vector(this.matrix3d.a00 * point.x + this.matrix3d.a01 * point.y + this.matrix3d.a02,
+            this.matrix3d.a10 * point.x + this.matrix3d.a11 * point.y + this.matrix3d.a12);
+    }
+
+    transformRectangle(rectangle) {
+        const topLeft = this.transformPoint(new Vector(rectangle.xMin, rectangle.yMin));
+        const bottomRight = this.transformPoint(new Vector(rectangle.xMax, rectangle.yMax));
+        return new RectangleAA(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y)
+    }
+}
+
+class Matrix3d {
+    constructor(a00,a01,a02,a10,a11,a12,a20,a21,a22){
+        this.a00 = a00;
+        this.a01 = a01;
+        this.a02 = a02;
+        this.a10 = a10;
+        this.a11 = a11;
+        this.a12 = a12;
+        this.a20 = a20;
+        this.a21 = a21;
+        this.a22 = a22;
+    }
+
+    multiplyWith(secondMatrix) {
+        return new Matrix3d(
+            this.a00 * secondMatrix.a00 + this.a01 * secondMatrix.a10 + this.a02 * secondMatrix.a20,
+                this.a00 * secondMatrix.a01 + this.a01 * secondMatrix.a11+ this.a02 * secondMatrix.a21,
+                    this.a00 * secondMatrix.a02+ this.a01 * secondMatrix.a12+ this.a02 * secondMatrix.a22,
+            this.a10 * secondMatrix.a00+ this.a11 * secondMatrix.a10+ this.a12 * secondMatrix.a20,
+                this.a10 * secondMatrix.a01 + this.a11 * secondMatrix.a11 + this.a12 * secondMatrix.a21,
+                    this.a10 * secondMatrix.a02+ this.a11 * secondMatrix.a12 + this.a12 * secondMatrix.a22,
+            this.a20 * secondMatrix.a00 + this.a21 * secondMatrix.a10  + this.a22 * secondMatrix.a20,
+                this.a20 * secondMatrix.a01 + this.a21 * secondMatrix.a11 + this.a22 * secondMatrix.a21,
+                    this.a20 * secondMatrix.a02 + this.a21 * secondMatrix.a12 + this.a22 * secondMatrix.a22,
+        )
+    }
+
 }
 
 class PhysicalLaws {
@@ -135,15 +235,24 @@ class Canvas {
     updateWithUniverse(universe) {
         this.clearCanvas();
 
-        const pointsToCoverInCamera = universe.planets.map(p => p.position);
-        pointsToCoverInCamera.push(new Vector(-10,-10))
-        pointsToCoverInCamera.push(new Vector(10,10))
-        if(this.currentCameraBounds != null) {
-            // pointsToCoverInCamera.push(new Vector(this.currentCameraBounds.xMin, this.currentCameraBounds.yMin))
-            // pointsToCoverInCamera.push(new Vector(this.currentCameraBounds.xMax, this.currentCameraBounds.yMax))
+        if(trackBodies || this.currentCameraBounds == null) {
+            const pointsToCoverInCamera = universe.planets.map(p => p.position);
+            pointsToCoverInCamera.push(new Vector(-10,-10))
+            pointsToCoverInCamera.push(new Vector(10,10))
+            if(this.currentCameraBounds != null) {
+                // pointsToCoverInCamera.push(new Vector(this.currentCameraBounds.xMin, this.currentCameraBounds.yMin))
+                // pointsToCoverInCamera.push(new Vector(this.currentCameraBounds.xMax, this.currentCameraBounds.yMax))
+            }
+            this.currentCameraBounds = this.getCameraBoundsForTrackingBodies(pointsToCoverInCamera)
+        } else {
+            // console.log(this.currentCameraBounds)
+            console.log(this.currentCameraBounds)
+            // this.currentCameraBounds = Transform2d.translation(Vector.getOrigin().diff(this.currentCameraBounds.getCenter()))
+            //     .concat(Transform2d.translation(universe.planets[0].position))
+            //     .transformRectangle(this.currentCameraBounds);
+            // this.currentCameraBounds = Transform2d.scaleAroundPoint(1/1.001, universe.planets[0].position).transformRectangle(this.currentCameraBounds);
         }
-
-        this.currentCameraBounds = this.getCameraBounds(pointsToCoverInCamera)
+        
         this.drawAxisAndGrid(this.currentCameraBounds);
         universe.planets.forEach(planet => {
             this.drawPlanet(planet, this.currentCameraBounds);
@@ -232,7 +341,7 @@ class Canvas {
         )
     }
 
-    getCameraBounds(pointsToCover) {
+    getCameraBoundsForTrackingBodies(pointsToCover) {
         const PADDING = 200;
         const bounds = {
             xMax: Number.NEGATIVE_INFINITY,
@@ -271,18 +380,30 @@ class Canvas {
             yMax: bounds.yMax,//(bounds.yMax - bounds.yMin) * 0.5,
             yMin: bounds.yMin,//(bounds.yMax - bounds.yMin) * 0.5,
         }
-        return inflatedBounds;
+
+        return new RectangleAA(inflatedBounds.xMin, inflatedBounds.yMin, inflatedBounds.xMax, inflatedBounds.yMax);
     }
 }
 
 let universe = new Universe();
-universe.addPlanet(new Planet(20000000, new Vector(-200, 0), new Vector(0, 0.16)));
-universe.addPlanet(new Planet(20000000, new Vector(200, 0), new Vector(0, -0.16)));
-universe.addPlanet(new Planet(20000000, new Vector(0, 0), new Vector(0.1, 0.1)));
-universe.addPlanet(new Planet(30000000, new Vector(100, 700), new Vector(0, 0)));
-universe.addPlanet(new Planet(30000000, new Vector(1700, 700), new Vector(0, 0)));
+universe.addPlanet(new Planet(20000000, new Vector(-1000, 0), new Vector(0, 0.4)));
+universe.addPlanet(new Planet(20000000, new Vector(1000, 0), new Vector(0, -0.4)));
+// universe.addPlanet(new Planet(20000000, new Vector(0, 0), new Vector(0.1, 0.1)));
+// universe.addPlanet(new Planet(30000000, new Vector(100, 700), new Vector(0, 0)));
+// universe.addPlanet(new Planet(30000000, new Vector(1700, 700), new Vector(0, 0)));
+universe.addPlanet(new Planet(200000000, new Vector(0, 0), new Vector(0, 0)));
+// TODO check why position(0,0) fails
 // universe.addPlanet(new Planet(30000000, new Vector(2200, 700), new Vector(0, 0)));
+
 let canvas = new Canvas(1500, 700)
+
+const checkbox = $('#track-bodies')[0]
+let trackBodies = checkbox.checked;
+
+checkbox.addEventListener('change', (event) => {
+    trackBodies = event.currentTarget.checked
+})
+
 
 const stopAllPlanets = () => {
     universe.planets.forEach(planet => {

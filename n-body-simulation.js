@@ -224,6 +224,19 @@ class Canvas {
         }
         this.currentCameraBounds = null;
         this.clearCanvas();
+
+        this.canvas.addEventListener("mousewheel", evt => {
+            const rect = this.canvas.getBoundingClientRect()
+            const x = evt.clientX - rect.left
+            const y = evt.clientY - rect.top
+            const evtPointInCanvas = new Vector(x,y);
+            if(this.currentCameraBounds != null) {
+                const evtPositionRelativeToCanvas = this.absoluteToRelativePosition(evtPointInCanvas, this.canvasBounds);
+                const evtPositionInCamera = this.relativeToAbsolutePosition(evtPositionRelativeToCanvas, this.currentCameraBounds);
+                this.currentCameraBounds = Transform2d.scaleAroundPoint(1+evt.deltaY/1000, evtPositionInCamera)
+                    .transformRectangle(this.currentCameraBounds);
+            }
+        })
     }
 
     clearCanvas() {
@@ -239,14 +252,14 @@ class Canvas {
             const pointsToCoverInCamera = universe.planets.map(p => p.position);
             pointsToCoverInCamera.push(new Vector(-10,-10))
             pointsToCoverInCamera.push(new Vector(10,10))
-            if(this.currentCameraBounds != null) {
+            // if(this.currentCameraBounds != null) {
                 // pointsToCoverInCamera.push(new Vector(this.currentCameraBounds.xMin, this.currentCameraBounds.yMin))
                 // pointsToCoverInCamera.push(new Vector(this.currentCameraBounds.xMax, this.currentCameraBounds.yMax))
-            }
+            // }
             this.currentCameraBounds = this.getCameraBoundsForTrackingBodies(pointsToCoverInCamera)
         } else {
             // console.log(this.currentCameraBounds)
-            console.log(this.currentCameraBounds)
+            // console.log(this.currentCameraBounds)
             // this.currentCameraBounds = Transform2d.translation(Vector.getOrigin().diff(this.currentCameraBounds.getCenter()))
             //     .concat(Transform2d.translation(universe.planets[0].position))
             //     .transformRectangle(this.currentCameraBounds);
@@ -327,6 +340,7 @@ class Canvas {
         ctx.fill();
     }
 
+    //TODO: use transform2d for this
     absoluteToRelativePosition(vector, bounds) {
         return new Vector(
             (vector.x - bounds.xMin)/parseFloat(bounds.xMax - bounds.xMin),

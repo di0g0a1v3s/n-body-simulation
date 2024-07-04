@@ -1,22 +1,40 @@
-import { UniverseSnapshot } from "../Universe/Universe"
+import { UniverseSnapshot, PlanetSnapshot } from '../Universe/Universe';
 import { Camera } from "./Camera";
 import { Canvas } from "./Canvas";
 import { Circle, RectangleAA } from '../Geometry/Shapes';
 import { Vector } from '../Geometry/Vector';
+import { LimitedQueue, createLimitedQueue } from '../Utils/Utils';
 
 
 export class Renderer { 
     constructor(private canvas: Canvas, private camera: Camera) {
+        
     }
 
-    renderUniverseSnapshot(universe: UniverseSnapshot) {
+    renderUniverse(universe: UniverseSnapshot, prevSnapshotsQueue: LimitedQueue<UniverseSnapshot>) {
         this.canvas.clear();
         this.renderAxisAndGrid();
+
+        if(prevSnapshotsQueue.length > 0) {
+            let opacity = 0.2;
+            const opacityStep = 0.2/prevSnapshotsQueue.length;
+            prevSnapshotsQueue.forEach(prevUniverse => {
+                opacity += opacityStep;
+                prevUniverse.planets.forEach(planet => {
+                    this.renderPlanetSnapshot(planet, opacity/10, opacity);
+                })
+            })
+        }
+        
         universe.planets.forEach(planet => {
-            const circleAbsoluteCoords = new Circle(planet.position, planet.radius);
-            const circleCameraCoords = circleAbsoluteCoords.applyTransformation(this.camera.getCameraTransform())
-            this.canvas.drawCircle(circleCameraCoords);
+            this.renderPlanetSnapshot(planet, 1, 1);
         })
+    }
+
+    private renderPlanetSnapshot(planet: PlanetSnapshot, opacity: number, scale: number) {
+        const circleAbsoluteCoords = new Circle(planet.position, planet.radius*scale);
+        const circleCameraCoords = circleAbsoluteCoords.applyTransformation(this.camera.getCameraTransform())
+        this.canvas.drawCircle(circleCameraCoords, planet.color, opacity);
     }
 
     private renderAxisAndGrid() {

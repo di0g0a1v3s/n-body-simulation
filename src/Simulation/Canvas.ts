@@ -6,14 +6,13 @@ export interface Canvas {
     clear(): void;
     readonly width: number;
     readonly height: number;
-    drawCircle(circle: Circle): void
+    drawCircle(circle: Circle, color: string, opacity: number): void
     onScroll(callback: (point: Point, deltaY: number, deltaX: number) => void): void
     drawVerticalLine(x: number, dashed: boolean, color: string): void;
     drawHorizontalLine(y: number, dashed: boolean, color: string): void;
     onMouseLeftDown(callback: (point: Point) => void): void
     onMouseLeftUp(callback: (point: Point) => void): void
     onMouseMove(callback: (point: Point) => void): void
-    
 }
 
 enum MouseButton {
@@ -165,10 +164,11 @@ class CanvasImpl implements Canvas {
 
     // }
 
-    drawCircle(circle: Circle) {
+    drawCircle(circle: Circle, color: string, opacity: number) {
         let ctx = this.htmlCanvas.getContext("2d");
         if(ctx != null) {
-            ctx.fillStyle = "white";
+            ctx.fillStyle = color;
+            ctx.globalAlpha = opacity;
             ctx.beginPath();
             ctx.arc(circle.center.x, circle.center.y, circle.radius, 0, 2 * Math.PI, true);
             ctx.fill();

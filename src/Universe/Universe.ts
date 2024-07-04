@@ -15,10 +15,11 @@ export interface UniverseSnapshot {
     readonly planets: ReadonlyArray<PlanetSnapshot>;
 }
 
-type PlanetSnapshot = {
+export type PlanetSnapshot = {
     readonly position: Point;
     readonly radius: number;
     readonly mass: number;
+    readonly color: string;
 }
 
 export class Planet {
@@ -26,14 +27,26 @@ export class Planet {
     private _radius: number;
     private _velocity: Vector;
     private _position: Point;
+    private _color: string;
     static create(mass: number, position: Point, velocity: Vector) {
-        return new this(mass, Math.sqrt(mass), position, velocity);
+        return new this(mass, Math.sqrt(mass), position, velocity, this.getRandomColor());
     }
-    private constructor(mass: number, radius: number, position: Point, velocity: Vector) {
+    
+    private constructor(mass: number, radius: number, position: Point, velocity: Vector, color: string) {
         this._mass = mass;
         this._radius = radius;
         this._position = position;
         this._velocity = velocity;
+        this._color = color;
+    }
+
+    private static getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
     }
 
     public get mass() {
@@ -52,6 +65,10 @@ export class Planet {
         return this._velocity;
     }
 
+    public get color() {
+        return this._color;
+    }
+
     public updateVelocity(newVelocity: Vector) {
         this._velocity = newVelocity;
     }
@@ -61,7 +78,7 @@ export class Planet {
     }
 
     clone(): Planet {
-        return new Planet(this._mass, this._radius, this._position, this._velocity)
+        return new Planet(this._mass, this._radius, this._position, this._velocity, this._color)
     }
 }
 
@@ -85,6 +102,7 @@ export class Universe {
                 mass: p.mass,
                 radius: p.radius,
                 position: {x: p.position.x, y: p.position.y},
+                color: p.color,
             }))
         }
     }

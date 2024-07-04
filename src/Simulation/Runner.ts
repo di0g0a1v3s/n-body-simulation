@@ -10,9 +10,9 @@ export abstract class SimulationRunner {
         let universe = new Universe();
         // universe.addPlanet(new Planet(20000000, new Vector(-1000, 0), new Vector(0, 0.4)));
         // universe.addPlanet(new Planet(20000000, new Vector(1000, 0), new Vector(0, -0.4)));
-        universe.addPlanet(new Planet(2000, new Vector(100, 100), new Vector(0, 0)));
-        universe.addPlanet(new Planet(2000, new Vector(0, 0), new Vector(0, 0)));
-        universe.addPlanet(new Planet(2000, new Vector(200, 200), new Vector(0, 0)));
+        universe.addPlanet(Planet.create(200, new Vector(50, 0), new Vector(0, -0.008)));
+        universe.addPlanet(Planet.create(200, new Vector(-50, 0), new Vector(0, 0.008)));
+        // universe.addPlanet(new Planet(2000, new Vector(200, 200), new Vector(0, 0)));
 
         const camera = new Camera();
         const renderer = new Renderer(canvas, camera)

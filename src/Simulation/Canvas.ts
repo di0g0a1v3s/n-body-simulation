@@ -31,14 +31,13 @@ class CanvasImpl implements Canvas {
             this.htmlCanvas.id = "main-canvas";
             document.body.appendChild(this.htmlCanvas);
         } else {
-            this.htmlCanvas = <HTMLCanvasElement>canvas;
+            this.htmlCanvas = canvas as HTMLCanvasElement;
         }
         this.htmlCanvas.width = window.innerWidth;
         this.htmlCanvas.height = window.innerHeight;
         this.clear();
         this.onScrollCallbacks = [];
         this.htmlCanvas.addEventListener("wheel", evt => {
-            console.log("qqq wheel")
             const rect = this.htmlCanvas.getBoundingClientRect();
             const x = evt.clientX - rect.left
             const y = evt.clientY - rect.top

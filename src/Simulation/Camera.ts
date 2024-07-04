@@ -5,7 +5,7 @@ export class Camera {
 
     private transform2d: Transform2d;
     constructor() {
-        this.transform2d = Transform2d.getIdentityTransform();
+        this.transform2d = Transform2d.translation(new Vector(400, 400));
     }
 
     zoomAroundPoint(stagePoint: Point, deltaY: number) {

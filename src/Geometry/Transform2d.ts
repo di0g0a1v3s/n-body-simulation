@@ -71,6 +71,11 @@ export class Transform2d {
             y: this.matrix3d.a10 * point.x + this.matrix3d.a11 * point.y + this.matrix3d.a12 };
     }
 
+    transformVector(vector: Vector): Vector {
+        return new Vector(this.matrix3d.a00 * vector.x + this.matrix3d.a01 * vector.y,
+            this.matrix3d.a10 * vector.x + this.matrix3d.a11 * vector.y);
+    }
+
     transformRectangle(rectangle: RectangleAA): RectangleAA {
         const topLeft = this.transformPoint({x: rectangle.xMin, y: rectangle.yMin});
         const bottomRight = this.transformPoint({x: rectangle.xMax, y: rectangle.yMax});

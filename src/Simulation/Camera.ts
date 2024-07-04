@@ -4,8 +4,10 @@ import { Point, Vector } from "../Geometry/Vector";
 export class Camera {
 
     private transform2d: Transform2d;
+    private inverseTransform2d: Transform2d;
     constructor() {
         this.transform2d = Transform2d.translation(new Vector(400, 400));
+        this.inverseTransform2d = this.transform2d.getInverseTransform();
     }
 
     zoomAroundPoint(stagePoint: Point, deltaY: number) {
@@ -13,13 +15,30 @@ export class Camera {
         if (scale < 0.1) {
             scale = 0.1
         }
-        this.transform2d = this.transform2d.concat(
+        this.updateTransform(this.transform2d.concat(
             Transform2d.scaleAroundPoint(scale, 
                 this.transform2d.getInverseTransform().transformPoint(stagePoint))
-        );
+        ));
+    }
+
+    translate(vector: Vector) {
+        this.updateTransform(this.transform2d.concat(
+            Transform2d.translation(
+                this.transform2d.getInverseTransform().transformVector(vector)
+            )
+        ));
+    }
+
+    private updateTransform(newTransform: Transform2d) {
+        this.transform2d = newTransform;
+        this.inverseTransform2d = this.transform2d.getInverseTransform();
     }
 
     getCameraTransform() {
         return this.transform2d;
+    }
+
+    getCameraInverseTransform() {
+        return this.inverseTransform2d;
     }
 }

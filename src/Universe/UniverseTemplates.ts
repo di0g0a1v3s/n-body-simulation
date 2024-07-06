@@ -15,7 +15,7 @@ export type BodyTemplate = {
 
 export function randomUniverseTemplate() {
     const bodies = [];
-    const n = 3//Math.random()*10;
+    const n = 100//Math.random()*10;
     for(let i = 0; i< n; i++) { 
         bodies.push(randomBodyTemplate())
     }
@@ -36,8 +36,8 @@ export function randomUniverseTemplate() {
 function randomBodyTemplate() {
     const ret =  {
         mass: 20000,//Math.random()*20000, 
-        position: {x: Math.random()*6000 - 3000, y: Math.random()*6000 - 3000},
-        velocity: {x: Math.random()*0.1 - 0.05, y: Math.random()*0.1 - 0.05}, 
+        position: {x: Math.random()*20000 - 10000, y: Math.random()*20000 - 10000},
+        velocity: {x: Math.random()*0.3 - 0.15, y: Math.random()*0.3 - 0.15}, 
         color: getRandomColor(),
     }
     return ret;
@@ -51,7 +51,8 @@ export function getRandomColor() {
     }
     return color;
 }
-
+let p = 150
+let w = 0.0113
 export const listOfTemplates: UniverseTemplate[] = [
     {
         name: "Snake",
@@ -185,20 +186,180 @@ export const listOfTemplates: UniverseTemplate[] = [
                 "color": "#128866"
             }
         ]
+    },
+    {
+        "name": "Lagrange Orbit 1",
+        "bodies": [
+            {
+                "mass": 200,
+                "position": {
+                    "x": 0,
+                    "y": p
+                },
+                "velocity": {
+                    "x": -w,
+                    "y": 0,
+                },
+                "color": "#265C0B"
+            },
+            {
+                "mass": 200,
+                "position": {
+                    "x": -p*Math.cos(Math.PI/6),
+                    "y": -p*Math.sin(Math.PI/6)
+                },
+                "velocity": {
+                    "x": w*Math.sin(Math.PI/6),
+                    "y": -w*Math.cos(Math.PI/6)
+                },
+                "color": "#2EF7C8"
+            },
+            {
+                "mass": 200,
+                "position": {
+                    "x": p*Math.cos(Math.PI/6),
+                    "y": -p*Math.sin(Math.PI/6)
+                },
+                "velocity": {
+                    "x": w*Math.sin(Math.PI/6),
+                    "y": w*Math.cos(Math.PI/6)
+                },
+                "color": "#128866"
+            }
+        ]
+    },
+    {
+        "name": "Three body book",
+        "bodies": [
+            {
+                "mass": 20000,
+                "position": {
+                    "x": 2285.697884882039,
+                    "y": -2165.3378701675547
+                },
+                "velocity": {
+                    "x": -0.023198967868412315,
+                    "y": -0.038271135416564975
+                },
+                "color": "#C601FE"
+            },
+            {
+                "mass": 20000,
+                "position": {
+                    "x": -2203.488887004943,
+                    "y": -1844.364885525506
+                },
+                "velocity": {
+                    "x": 0.01524765154938501,
+                    "y": -0.0418760238895142
+                },
+                "color": "#D201C7"
+            },
+            {
+                "mass": 20000,
+                "position": {
+                    "x": -1925.0875046931167,
+                    "y": -654.1305214909098
+                },
+                "velocity": {
+                    "x": 0.04573197052105571,
+                    "y": 0.009737909301543127
+                },
+                "color": "#1AB31C"
+            },
+            {
+                "mass": 20000,
+                "position": {
+                    "x": -583.0516230413746,
+                    "y": -2296.470371429489
+                },
+                "velocity": {
+                    "x": 0.019802198357185594,
+                    "y": -0.025779872261537908
+                },
+                "color": "#7C20AA"
+            },
+            {
+                "mass": 20000,
+                "position": {
+                    "x": 2997.9414607130275,
+                    "y": 237.71726042868067
+                },
+                "velocity": {
+                    "x": 0.004982685719059153,
+                    "y": 0.030130062055826953
+                },
+                "color": "#94E237"
+            }
+        ]
+    }, {
+        "name": "3 body ephemeral",
+        "bodies": [
+            {
+                "mass": 20000,
+                "position": {
+                    "x": 1976.556214881366,
+                    "y": -968.5023309690464
+                },
+                "velocity": {
+                    "x": -0.03222196477083887,
+                    "y": -0.037978525184731486
+                },
+                "color": "#91684B"
+            },
+            {
+                "mass": 20000,
+                "position": {
+                    "x": -377.03376490471874,
+                    "y": 2366.36510123079
+                },
+                "velocity": {
+                    "x": -0.02516578787220738,
+                    "y": 0.016647368016529884
+                },
+                "color": "#7B9A86"
+            },
+            {
+                "mass": 20000,
+                "position": {
+                    "x": -2749.7106248157543,
+                    "y": -832.923730689401
+                },
+                "velocity": {
+                    "x": -0.017747199335546207,
+                    "y": 0.022207018278801935
+                },
+                "color": "#253FD3"
+            },
+            {
+                "mass": 20000,
+                "position": {
+                    "x": -508.9298345199895,
+                    "y": 1736.0519955555455
+                },
+                "velocity": {
+                    "x": 0.03684268584658583,
+                    "y": 0.033410129033434766
+                },
+                "color": "#BEEA6E"
+            },
+            {
+                "mass": 20000,
+                "position": {
+                    "x": -1251.8014275325847,
+                    "y": 828.9435306161595
+                },
+                "velocity": {
+                    "x": 0.04623572973464676,
+                    "y": -0.028911741031511198
+                },
+                "color": "#CD3468"
+            }
+        ]
     }
         
 ]
 
-
-// this.universe = new Universe(this.options.gravitationalConstant);
-// universe.addBody(Body.create(200, new Vector(50, 0), new Vector(0, -0.008)));
-// universe.addBody(Body.create(200, new Vector(-50, 0), new Vector(0, 0.008)));
-
-// const x = 0.016
-// universe.addBody(Body.create(200, new Vector(50, 0), new Vector(x, x)));
-// universe.addBody(Body.create(200, new Vector(-50, 0), new Vector(-x, -x)));
-// universe.addBody(Body.create(200, new Vector(0, 50), new Vector(-x, x)));
-// universe.addBody(Body.create(200, new Vector(0, -50), new Vector(x, -x)));
 
 // lagrange orbit
 // let p = 150

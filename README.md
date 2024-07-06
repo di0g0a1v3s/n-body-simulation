@@ -1,3 +1,11 @@
+TODOS:
+- Stop simulations if window is closed
+- G should be part of template
+- List of bodies, add, delete
+- deterministic color for collision
+- Find stable orbits
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

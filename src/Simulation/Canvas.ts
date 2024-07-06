@@ -15,8 +15,6 @@ export class Canvas {
     private onMouseMoveCallbacks: ((point: Point) => void)[] = [];
     
     constructor(private htmlCanvas: HTMLCanvasElement) {
-        this.htmlCanvas.width = window.innerWidth;
-        this.htmlCanvas.height = window.innerHeight;
         this.clear();
 
         const getEvtPointInCanvas = (evt: MouseEvent): Point => {

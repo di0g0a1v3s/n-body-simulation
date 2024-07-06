@@ -22,13 +22,15 @@ export class SimulationRunner {
     private universe: Universe;
     private renderer: Renderer;
     private prevSnapshotsQueue: LimitedQueue<UniverseSnapshot>;
-    constructor(private options: SimulationOptions, private htmlCanvas: HTMLCanvasElement, universeTemplate: UniverseTemplate) {
+    constructor(private options: SimulationOptions, private htmlCanvas: HTMLCanvasElement, universeTemplate: UniverseTemplate, setUpInteractions: boolean) {
 
         this.universe = Universe.createFromTemplate(universeTemplate, this.options.gravitationalConstant);
         const camera = new Camera();  
         const canvas = new Canvas(this.htmlCanvas);
         this.renderer = new Renderer(canvas, camera, this.options)
-        InteractionHandler.setUpHandlers(camera, canvas)
+        if(setUpInteractions) {
+            InteractionHandler.setUpHandlers(camera, canvas)
+        }
 
         this.prevSnapshotsQueue = createLimitedQueue(MAX_SNAPSHOTS);
         

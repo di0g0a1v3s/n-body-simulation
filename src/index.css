@@ -18,6 +18,12 @@ code {
   height: 100%;
 }
 
+.thumbnail-canvas {
+  margin-top: 10px;
+  margin-bottom: 4px;
+  cursor: pointer;
+}
+
 .sidepanel {
   position: absolute;
   right: 0px;

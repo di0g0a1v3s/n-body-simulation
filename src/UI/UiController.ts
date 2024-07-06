@@ -1,5 +1,5 @@
 import { SimulationOptions, SimulationRunner } from '../Simulation/Runner';
-import { randomUniverseTemplate } from '../Universe/UniverseTemplates';
+import { listOfTemplates, randomUniverseTemplate } from '../Universe/UniverseTemplates';
 
 const DEFAULT_SIMULATION_OPTIONS: SimulationOptions = {
     speed: 20,
@@ -22,12 +22,17 @@ export class UiController {
     constructor() {
         const htmlCanvas = document.getElementById("main-canvas") as HTMLCanvasElement;
 
+        htmlCanvas.width = window.innerWidth;
+        htmlCanvas.height = window.innerHeight;
         window.addEventListener("resize", () => {
             htmlCanvas.width = window.innerWidth;
             htmlCanvas.height = window.innerHeight;
         })
 
-        this.simulation = new SimulationRunner(DEFAULT_SIMULATION_OPTIONS, htmlCanvas, randomUniverseTemplate());
+        // this.setUpTemplateList();
+
+
+        this.simulation = new SimulationRunner(DEFAULT_SIMULATION_OPTIONS, htmlCanvas, randomUniverseTemplate(), true);
 
         this.speedController = document.getElementById("speed-control") as HTMLInputElement;
         this.gridController = document.getElementById("show-grid-control") as HTMLInputElement;
@@ -63,6 +68,27 @@ export class UiController {
         this.gridController.checked = simulationOptions.showGrid;
         this.trailController.checked = simulationOptions.showTrails;
         this.trackBodiesControl.checked = simulationOptions.trackBodies;
+    }
+
+    setUpTemplateList() {
+        const container = document.getElementById("template-list-container") as HTMLDivElement;
+        listOfTemplates.forEach(template => {
+            const canvas = document.createElement("canvas");
+            container.appendChild(canvas);
+            canvas.className="thumbnail-canvas";
+            canvas.addEventListener("click", () => {
+                this.simulation.replaceUniverse(template);
+            })
+            canvas.width = 250;
+            const runner = new SimulationRunner({
+                ...DEFAULT_SIMULATION_OPTIONS,
+                showGrid: false,
+                trackBodies: true
+            }, canvas, template, false);
+            setInterval(() => {
+                runner.replaceUniverse(template); 
+            }, 20000)
+        });
     }
 }
 

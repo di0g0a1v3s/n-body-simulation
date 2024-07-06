@@ -1,4 +1,4 @@
-import { SimulationRunner } from "./Simulation/Runner";
 import "./index.css"
+import { UiController } from "./UI/UiController";
 
-SimulationRunner.startSimulation();
+new UiController();

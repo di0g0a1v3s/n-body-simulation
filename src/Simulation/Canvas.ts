@@ -2,51 +2,19 @@ import { Circle } from "../Geometry/Shapes";
 import { Point } from "../Geometry/Vector";
 
 
-export interface Canvas {
-    clear(): void;
-    readonly width: number;
-    readonly height: number;
-    drawCircle(circle: Circle, color: string, opacity: number): void
-    onScroll(callback: (point: Point, deltaY: number, deltaX: number) => void): void
-    drawVerticalLine(x: number, dashed: boolean, color: string): void;
-    drawHorizontalLine(y: number, dashed: boolean, color: string): void;
-    onMouseLeftDown(callback: (point: Point) => void): void
-    onMouseLeftUp(callback: (point: Point) => void): void
-    onMouseMove(callback: (point: Point) => void): void
-}
-
 enum MouseButton {
     LEFT = 0,
     MIDDLE = 1,
     RIGHT = 2,
 }
 
-class CanvasImpl implements Canvas {
-    // singleton class
-    private static instance: CanvasImpl;
-    private htmlCanvas: HTMLCanvasElement;
+export class Canvas {
     private onScrollCallbacks: ((point: Point, deltaY: number, deltaX: number) => void)[] = [];
     private onMouseLeftUpCallbacks: ((point: Point) => void)[] = [];
     private onMouseLeftDownCallbacks: ((point: Point) => void)[] = [];
     private onMouseMoveCallbacks: ((point: Point) => void)[] = [];
-
-    public static get Instance() {
-        if(this.instance == null) {
-            this.instance = new this();
-        }
-        return this.instance;
-    }
-
     
-    private constructor() {
-        const canvas = document.getElementById("main-canvas")
-        if(canvas == null) {
-            this.htmlCanvas = document.createElement('canvas');
-            this.htmlCanvas.id = "main-canvas";
-            document.body.appendChild(this.htmlCanvas);
-        } else {
-            this.htmlCanvas = canvas as HTMLCanvasElement;
-        }
+    constructor(private htmlCanvas: HTMLCanvasElement) {
         this.htmlCanvas.width = window.innerWidth;
         this.htmlCanvas.height = window.innerHeight;
         this.clear();
@@ -89,11 +57,6 @@ class CanvasImpl implements Canvas {
                 cb(evtPointInCanvas);
             })
             
-        })
-
-        window.addEventListener("resize", () => {
-            this.htmlCanvas.width = window.innerWidth;
-            this.htmlCanvas.height = window.innerHeight;
         })
     }
 
@@ -140,29 +103,6 @@ class CanvasImpl implements Canvas {
             ctx.fillRect(0, 0, this.width, this.height);
         }
     }
-
-    // drawAxisThoughPoint(pointInCanvas, color, dashed) {
-    //     let ctx = this.canvas.getContext("2d");
-    //     if(dashed){
-    //         ctx.setLineDash([5, 15]);
-    //     } else {
-    //         ctx.setLineDash([])
-    //     }
-
-    //     ctx.beginPath();
-    //     ctx.moveTo(0, pointInCanvas.y);
-    //     ctx.lineTo(this.canvas.width, pointInCanvas.y);
-    //     ctx.strokeStyle = color;
-    //     ctx.stroke();
-        
-
-    //     ctx.beginPath();
-    //     ctx.moveTo(pointInCanvas.x, 0);
-    //     ctx.lineTo(pointInCanvas.x, this.canvas.height);
-    //     ctx.strokeStyle = color;
-    //     ctx.stroke();
-
-    // }
 
     drawCircle(circle: Circle, color: string, opacity: number) {
         let ctx = this.htmlCanvas.getContext("2d");
@@ -212,5 +152,3 @@ class CanvasImpl implements Canvas {
     }
 
 }
-
-export const canvas = CanvasImpl.Instance;

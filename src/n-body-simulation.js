@@ -9,9 +9,9 @@
 // })
 
 
-// const stopAllPlanets = () => {
-//     universe.planets.forEach(planet => {
-//         planet.velocity = new Vector(0,0)
+// const stopAllBodies = () => {
+//     universe.bodies.forEach(body => {
+//         body.velocity = new Vector(0,0)
 //     })
 // }
 

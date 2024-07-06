@@ -27,7 +27,6 @@ export abstract class InteractionHandler {
 
         canvas.onMouseMove(point => {
             if(dragState.isDragging && dragState.stagePoint != null) {
-                console.log("qqq dragging")
                 camera.translate(Vector.diffBetweenPoints(dragState.stagePoint, point))
                 dragState.stagePoint = point;
             }

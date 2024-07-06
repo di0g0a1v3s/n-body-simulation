@@ -29,7 +29,7 @@ export class Camera {
         ));
     }
 
-    private updateTransform(newTransform: Transform2d) {
+    updateTransform(newTransform: Transform2d) {
         this.transform2d = newTransform;
         this.inverseTransform2d = this.transform2d.getInverseTransform();
     }

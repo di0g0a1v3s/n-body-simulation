@@ -1,35 +1,31 @@
-import { Point, Vector } from "../Geometry/Vector";
+import { Point, Vector } from '../Geometry/Vector';
+import { getRandomColor, BodyTemplate, UniverseTemplate } from './UniverseTemplates';
 
 const COLLISION_TOLERANCE_PERCENTAGE = 0
 
-abstract class PhysicalLaws {
-    static G_CONSTANT = 0.0001;
-    static accelerationBetweenPlanets(planet1: Planet, planet2: Planet) {
-        // a_12 = v_12 * (G * m_2)/||v_12||^3
-        let vectorPlanet1ToPlanet2 = Vector.diffBetweenPoints(planet1.position, planet2.position);
-        return vectorPlanet1ToPlanet2.scalarMultiplication(PhysicalLaws.G_CONSTANT * planet2.mass/(vectorPlanet1ToPlanet2.magnitudeSquared() * vectorPlanet1ToPlanet2.magnitude()))
-    }
-}
-
 export interface UniverseSnapshot {
-    readonly planets: ReadonlyArray<PlanetSnapshot>;
+    readonly bodies: ReadonlyArray<BodySnapshot>;
 }
 
-export type PlanetSnapshot = {
+export type BodySnapshot = {
     readonly position: Point;
     readonly radius: number;
     readonly mass: number;
     readonly color: string;
 }
 
-export class Planet {
+export class Body {
     private _mass: number;
     private _radius: number;
     private _velocity: Vector;
     private _position: Point;
     private _color: string;
     static create(mass: number, position: Point, velocity: Vector) {
-        return new this(mass, Math.sqrt(mass), position, velocity, this.getRandomColor());
+        return new this(mass, Math.sqrt(mass), position, velocity, getRandomColor());
+    }
+
+    static createFromTemplate(bodyTempalte: BodyTemplate) {
+        return new this(bodyTempalte.mass, Math.sqrt(bodyTempalte.mass), bodyTempalte.position, Vector.fromPoint(bodyTempalte.velocity), bodyTempalte.color);
     }
     
     private constructor(mass: number, radius: number, position: Point, velocity: Vector, color: string) {
@@ -38,15 +34,6 @@ export class Planet {
         this._position = position;
         this._velocity = velocity;
         this._color = color;
-    }
-
-    private static getRandomColor() {
-        var letters = '0123456789ABCDEF';
-        var color = '#';
-        for (var i = 0; i < 6; i++) {
-          color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
     }
 
     public get mass() {
@@ -77,28 +64,40 @@ export class Planet {
         this._position = newPosition;
     }
 
-    clone(): Planet {
-        return new Planet(this._mass, this._radius, this._position, this._velocity, this._color)
+    clone(): Body {
+        return new Body(this._mass, this._radius, this._position, this._velocity, this._color)
     }
 }
 
 export class Universe {
-    private planets: Planet[];
-    constructor() {
-        this.planets = [];
+    private bodies: Body[];
+    private constructor(private gravitationalContant: number) {
+        this.bodies = [];
     }
 
-    addPlanet(planet: Planet){
-        this.planets.push(planet)
+    static createFromTemplate(template: UniverseTemplate, g: number){
+        const u =  new this(g);
+        template.bodies.forEach(body => {
+            u.addBody(Body.createFromTemplate(body))
+        })
+        return u;
     }
 
-    private collidingPlanets(planet1: Planet, planet2: Planet) {
-        return Vector.diffBetweenPoints(planet1.position, planet2.position).magnitudeSquared() < (planet1.radius + planet2.radius)**2 * (1+COLLISION_TOLERANCE_PERCENTAGE/100)
+    setGravitationalConstant(g: number) {
+        this.gravitationalContant = g;
+    }
+
+    private addBody(body: Body){
+        this.bodies.push(body)
+    }
+
+    private collidingBodies(body1: Body, body2: Body) {
+        return Vector.diffBetweenPoints(body1.position, body2.position).magnitudeSquared() < (body1.radius + body2.radius)**2 * (1+COLLISION_TOLERANCE_PERCENTAGE/100)
     }
 
     public getSnapshot(): UniverseSnapshot {
         return {
-            planets: this.planets.map(p => ({
+            bodies: this.bodies.map(p => ({
                 mass: p.mass,
                 radius: p.radius,
                 position: {x: p.position.x, y: p.position.y},
@@ -108,39 +107,45 @@ export class Universe {
     }
 
     public updatePositions(deltaTsinceLastUpdate: number) {
-        let planetsOriginal = this.planets.map(p => p.clone());
+        let bodiesOriginal = this.bodies.map(p => p.clone());
 
-        planetsOriginal.forEach((planet1, indexPlanet1) => {
+        bodiesOriginal.forEach((body1, indexBody1) => {
             let acceleration = new Vector(0,0);
-            planetsOriginal.forEach((planet2) => {
-                if(planet1 !== planet2) {
-                    acceleration = acceleration.add(PhysicalLaws.accelerationBetweenPlanets(planet1, planet2))
+            bodiesOriginal.forEach((body2) => {
+                if(body1 !== body2) {
+                    acceleration = acceleration.add(this.accelerationBetweenBodies(body1, body2))
                 }
             }) 
             // newVelocity = a * deltaT + oldVelocity
-            const newVelocity = this.planets[indexPlanet1].velocity.add(acceleration.scalarMultiplication(deltaTsinceLastUpdate));
+            const newVelocity = this.bodies[indexBody1].velocity.add(acceleration.scalarMultiplication(deltaTsinceLastUpdate));
             // newPosition = v * deltaT + oldPosition
-            const newPosition = Vector.fromPoint(this.planets[indexPlanet1].position).add(this.planets[indexPlanet1].velocity.scalarMultiplication(deltaTsinceLastUpdate));
-            this.planets[indexPlanet1].updateVelocity(newVelocity);
-            this.planets[indexPlanet1].updatePosition(newPosition);  
+            const newPosition = Vector.fromPoint(this.bodies[indexBody1].position).add(this.bodies[indexBody1].velocity.scalarMultiplication(deltaTsinceLastUpdate));
+            this.bodies[indexBody1].updateVelocity(newVelocity);
+            this.bodies[indexBody1].updatePosition(newPosition);  
         })
 
         // collisions
-        this.planets.forEach((planet1, indexPlanet1) => {
-            this.planets.forEach((planet2, indexPlanet2) => {
-                if(planet1 !== planet2 && this.collidingPlanets(planet1,planet2)){
-                    const newMass = planet1.mass + planet2.mass;
-                    this.planets[indexPlanet1] = Planet.create(
+        this.bodies.forEach((body1, indexBody1) => {
+            this.bodies.forEach((body2, indexBody2) => {
+                if(body1 !== body2 && this.collidingBodies(body1,body2)){
+                    const newMass = body1.mass + body2.mass;
+                    this.bodies[indexBody1] = Body.create(
                         newMass, 
                         // center of mass of two bodies: xf = (x1 * m1 + x2 * m2)/(m1 + m2)
-                        Vector.fromPoint(planet1.position).scalarMultiplication(planet1.mass/newMass).add(Vector.fromPoint(planet2.position).scalarMultiplication(planet2.mass/newMass)),
+                        Vector.fromPoint(body1.position).scalarMultiplication(body1.mass/newMass).add(Vector.fromPoint(body2.position).scalarMultiplication(body2.mass/newMass)),
                         // conservation of linear momentum: vf = (v1 * m1 + v2 * m2)/(m1 + m2)
-                        planet1.velocity.scalarMultiplication(planet1.mass/newMass).add(planet2.velocity.scalarMultiplication(planet2.mass/newMass))
+                        body1.velocity.scalarMultiplication(body1.mass/newMass).add(body2.velocity.scalarMultiplication(body2.mass/newMass))
                     )
-                    this.planets.splice(indexPlanet2, 1)
+                    this.bodies.splice(indexBody2, 1)
                 }
             })
         })
+    }
+
+    private accelerationBetweenBodies(body1: Body, body2: Body) {
+        // a_12 = v_12 * (G * m_2)/||v_12||^3
+        let vectorBody1ToBody2 = Vector.diffBetweenPoints(body1.position, body2.position);
+        return vectorBody1ToBody2.scalarMultiplication(this.gravitationalContant * body2.mass/(vectorBody1ToBody2.magnitudeSquared() * vectorBody1ToBody2.magnitude()))
     }
 }
 

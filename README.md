@@ -1,7 +1,6 @@
 TODOS:
 - Stop simulations if window is closed
-- G should be part of template
-- List of bodies, add, delete
+- Add, delete
 - deterministic color for collision
 - Find stable orbits
 

@@ -75,8 +75,8 @@ export class Universe {
         this.bodies = [];
     }
 
-    static createFromTemplate(template: UniverseTemplate, g: number){
-        const u =  new this(g);
+    static createFromTemplate(template: UniverseTemplate){
+        const u =  new this(template.gravitationalConstant);
         template.bodies.forEach(body => {
             u.addBody(Body.createFromTemplate(body))
         })
@@ -85,6 +85,10 @@ export class Universe {
 
     setGravitationalConstant(g: number) {
         this.gravitationalContant = g;
+    }
+
+    getGravitationalConstant() {
+        return this.gravitationalContant;
     }
 
     private addBody(body: Body){
@@ -103,6 +107,21 @@ export class Universe {
                 position: {x: p.position.x, y: p.position.y},
                 color: p.color,
             }))
+        }
+    }
+
+    public getTemplateDataFromCurrUniverseState(): UniverseTemplate {
+        return {
+            name: "Placehoder",
+            gravitationalConstant: this.getGravitationalConstant(),
+            bodies: this.bodies.map(body => {
+                return {
+                    mass: body.mass,
+                    color: body.color,
+                    position: body.position,
+                    velocity: body.velocity
+                }
+            })
         }
     }
 

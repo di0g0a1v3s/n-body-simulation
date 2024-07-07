@@ -1,8 +1,8 @@
-import { Point, Vector } from '../Geometry/Vector';
-import { Body, Universe } from './Universe';
+import { Point } from '../Geometry/Vector';
 
 export type UniverseTemplate = {
-    readonly name: string,
+    readonly name: string;
+    readonly gravitationalConstant: number;
     readonly bodies: ReadonlyArray<BodyTemplate>;
 }
 
@@ -15,29 +15,23 @@ export type BodyTemplate = {
 
 export function randomUniverseTemplate() {
     const bodies = [];
-    const n = 100//Math.random()*10;
+    const n = 6//Math.random()*10;
     for(let i = 0; i< n; i++) { 
         bodies.push(randomBodyTemplate())
     }
-    // bodies.push({
-    //     mass: bodies[0].mass + bodies[1].mass, 
-    //     position: {x: -bodies[0].position.x - bodies[1].position.x,y: -bodies[0].position.y - bodies[1].position.y},
-    //     velocity: {x: -bodies[0].velocity.x - bodies[1].velocity.x, y: -bodies[0].velocity.y - bodies[1].velocity.y}, 
-    //     color: getRandomColor(),
-    // })
     const template = {
         name: "Random",
+        gravitationalConstant: 0.0001,
         bodies
     }
-    console.log("qqq template", template);
     return template;
 }
 
 function randomBodyTemplate() {
     const ret =  {
-        mass: 20000,//Math.random()*20000, 
-        position: {x: Math.random()*20000 - 10000, y: Math.random()*20000 - 10000},
-        velocity: {x: Math.random()*0.3 - 0.15, y: Math.random()*0.3 - 0.15}, 
+        mass: 20000,
+        position: {x: Math.random()*4000, y: Math.random()*4000},
+        velocity: {x: Math.random()*0.2 - 0.1, y: Math.random()*0.2 - 0.1}, 
         color: getRandomColor(),
     }
     return ret;
@@ -56,6 +50,7 @@ let w = 0.0113
 export const listOfTemplates: UniverseTemplate[] = [
     {
         name: "Snake",
+        gravitationalConstant: 0.0001,
         bodies: [{
             "mass": 10848.577413945879,
             "position": {
@@ -107,6 +102,7 @@ export const listOfTemplates: UniverseTemplate[] = [
     },
     {
         "name": "Stairs",
+        gravitationalConstant: 0.0001,
         "bodies": [
             {
                 "mass": 17239.93679379871,
@@ -148,6 +144,7 @@ export const listOfTemplates: UniverseTemplate[] = [
     },
     {
         "name": "Frog",
+        gravitationalConstant: 0.0001,
         "bodies": [
             {
                 "mass": 11538.066115904418,
@@ -188,10 +185,53 @@ export const listOfTemplates: UniverseTemplate[] = [
         ]
     },
     {
+        "name": "Lagrange Orbit 2",
+        "gravitationalConstant": 0.000003,
+        "bodies": [
+            {
+                "mass": 2000,
+                "color": "#265C0B",
+                "position": {
+                    "x": 5.0095811230865985,
+                    "y": -766.3223983994834
+                },
+                "velocity": {
+                    "x": 0.002233957335606779,
+                    "y": 0.00003930380087324277
+                }
+            },
+            {
+                "mass": 2000,
+                "color": "#2EF7C8",
+                "position": {
+                    "x": 661.1498742393701,
+                    "y": 387.4996236287127
+                },
+                "velocity": {
+                    "x": -0.0011510167563485803,
+                    "y": 0.0019150119027436525
+                }
+            },
+            {
+                "mass": 2000,
+                "color": "#128866",
+                "position": {
+                    "x": -666.1594553624413,
+                    "y": 378.82277477076616
+                },
+                "velocity": {
+                    "x": -0.001082940579258209,
+                    "y": -0.0019543157036168595
+                }
+            }
+        ]
+    },{
         "name": "Lagrange Orbit 1",
+        "gravitationalConstant": 0.000165,
         "bodies": [
             {
                 "mass": 200,
+                "color": "#265C0B",
                 "position": {
                     "x": 0,
                     "y": p
@@ -200,7 +240,6 @@ export const listOfTemplates: UniverseTemplate[] = [
                     "x": -w,
                     "y": 0,
                 },
-                "color": "#265C0B"
             },
             {
                 "mass": 200,
@@ -216,6 +255,7 @@ export const listOfTemplates: UniverseTemplate[] = [
             },
             {
                 "mass": 200,
+                "color": "#128866",
                 "position": {
                     "x": p*Math.cos(Math.PI/6),
                     "y": -p*Math.sin(Math.PI/6)
@@ -224,12 +264,54 @@ export const listOfTemplates: UniverseTemplate[] = [
                     "x": w*Math.sin(Math.PI/6),
                     "y": w*Math.cos(Math.PI/6)
                 },
-                "color": "#128866"
+            }
+        ]
+    }
+    ,{
+        "name": "Lagrange Orbit triangle",
+        "gravitationalConstant": 0.00010,
+        "bodies": [
+            {
+                "mass": 200,
+                "color": "#265C0B",
+                "position": {
+                    "x": 0,
+                    "y": p
+                },
+                "velocity": {
+                    "x": -w,
+                    "y": 0,
+                },
+            },
+            {
+                "mass": 200,
+                "position": {
+                    "x": -p*Math.cos(Math.PI/6),
+                    "y": -p*Math.sin(Math.PI/6)
+                },
+                "velocity": {
+                    "x": w*Math.sin(Math.PI/6),
+                    "y": -w*Math.cos(Math.PI/6)
+                },
+                "color": "#2EF7C8"
+            },
+            {
+                "mass": 200,
+                "color": "#128866",
+                "position": {
+                    "x": p*Math.cos(Math.PI/6),
+                    "y": -p*Math.sin(Math.PI/6)
+                },
+                "velocity": {
+                    "x": w*Math.sin(Math.PI/6),
+                    "y": w*Math.cos(Math.PI/6)
+                },
             }
         ]
     },
     {
         "name": "Three body book",
+        gravitationalConstant: 0.0001,
         "bodies": [
             {
                 "mass": 20000,
@@ -293,70 +375,140 @@ export const listOfTemplates: UniverseTemplate[] = [
             }
         ]
     }, {
-        "name": "3 body ephemeral",
+        "name": "3 body longest",
+        "gravitationalConstant": 0.0001,
         "bodies": [
             {
-                "mass": 20000,
+                "mass": 40000,
+                "color": "#9B13F0",
                 "position": {
-                    "x": 1976.556214881366,
-                    "y": -968.5023309690464
+                    "x": 4321.964522020793,
+                    "y": 10314.690864069222
                 },
                 "velocity": {
-                    "x": -0.03222196477083887,
-                    "y": -0.037978525184731486
+                    "x": 0.010294655063058544,
+                    "y": 0.013885887471951335
+                }
+            },
+            {
+                "mass": 40000,
+                "color": "#3542BB",
+                "position": {
+                    "x": 9897.776878006804,
+                    "y": 3450.176362272381
+                },
+                "velocity": {
+                    "x": 0.008629010225863085,
+                    "y": -0.028778179088534934
+                }
+            },
+            {
+                "mass": 20000,
+                "color": "#CD3468",
+                "position": {
+                    "x": 10944.569715312535,
+                    "y": 4215.389512701704
+                },
+                "velocity": {
+                    "x": -0.02990386697520259,
+                    "y": 0.03515883234569152
+                }
+            }
+        ]
+    }, {
+        "name": "asda",
+        "gravitationalConstant": 0.0001,
+        "bodies": [
+            {
+                "mass": 200000,
+                "position": {
+                    "x": 5000,
+                    "y": 1500
+                },
+                "velocity": {
+                    "x": 0,
+                    "y": -0.03
                 },
                 "color": "#91684B"
             },
             {
-                "mass": 20000,
+                "mass": 200000,
                 "position": {
-                    "x": -377.03376490471874,
-                    "y": 2366.36510123079
+                    "x": 0,
+                    "y": -1500
                 },
                 "velocity": {
-                    "x": -0.02516578787220738,
-                    "y": 0.016647368016529884
+                    "x": 0,
+                    "y": 0.03
                 },
                 "color": "#7B9A86"
             },
             {
-                "mass": 20000,
+                "mass": 200000,
                 "position": {
-                    "x": -2749.7106248157543,
-                    "y": -832.923730689401
+                    "x": -20000,
+                    "y": 0
                 },
                 "velocity": {
-                    "x": -0.017747199335546207,
-                    "y": 0.022207018278801935
+                    "x": 0,
+                    "y": 0.05
                 },
-                "color": "#253FD3"
-            },
-            {
-                "mass": 20000,
-                "position": {
-                    "x": -508.9298345199895,
-                    "y": 1736.0519955555455
-                },
-                "velocity": {
-                    "x": 0.03684268584658583,
-                    "y": 0.033410129033434766
-                },
-                "color": "#BEEA6E"
-            },
-            {
-                "mass": 20000,
-                "position": {
-                    "x": -1251.8014275325847,
-                    "y": 828.9435306161595
-                },
-                "velocity": {
-                    "x": 0.04623572973464676,
-                    "y": -0.028911741031511198
-                },
-                "color": "#CD3468"
+                "color": "#7B9A86"
             }
-        ]
-    }
+        ]}, {
+            "name": "lasdk",
+            "gravitationalConstant": 0.0001,
+            "bodies":
+            [
+            // {
+            //     "mass": 20000,
+            //     "color": "#820F9D",
+            //     "position": {
+            //         "x": -244251.43220865514,
+            //         "y": 583150.5871192231
+            //     },
+            //     "velocity": {
+            //         "x": -0.018076752411690065,
+            //         "y": 0.04202445029562495
+            //     }
+            // },
+            {
+                "mass": 20000,
+                "color": "#9DF4E9",
+                "position": {
+                    "x": -95125.2561162027,
+                    "y": 31258.781276085414
+                },
+                "velocity": {
+                    "x": 0.026352303868642464,
+                    "y": 0.012583756282917882
+                }
+            },
+            {
+                "mass": 60000,
+                "color": "#F4E99D",
+                "position": {
+                    "x": -96076.18375132357,
+                    "y": 28674.737715670824
+                },
+                "velocity": {
+                    "x": -0.020515623373137854,
+                    "y": 0.002880014046207525
+                }
+            },
+            {
+                "mass": 20000,
+                "color": "#D904D3",
+                "position": {
+                    "x": -76285.13116543651,
+                    "y": 35682.30440263128
+                },
+                "velocity": {
+                    "x": 0.001191081207078517,
+                    "y": -0.010540778595408404
+                }
+            }
+        ]}
         
 ]
 

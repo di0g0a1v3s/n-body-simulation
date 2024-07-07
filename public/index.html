@@ -17,7 +17,7 @@
 
               <div class="my-2">
                 <label for="speedRange" class="form-label">Gravitational Force</label>
-                <input id="gravitational-force-control" type="range" class="form-range" min="0.00001" max="0.001" step="0.00001" id="speedRange">
+                <input id="gravitational-force-control" type="range" class="form-range" min="0.0000001" max="0.001" step="0.0000001" id="speedRange">
               </div>
 
               <div class="my-2">
@@ -58,8 +58,7 @@
             </button>
           </h2>
           <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
-            <div class="accordion-body">
-              List of bodies
+            <div class="accordion-body" id="bodies-list-container">
             </div>
           </div>
         </div>
@@ -75,7 +74,12 @@
           </div>
         </div>
       </div>
-      <button id="random-template" type="button" class="btn btn-primary m-4">Random</button>
+      <div>
+        <button id="random-template" type="button" class="btn btn-primary m-2">Random Universe</button>
+      </div>
+      <div>
+        <button id="save-template" type="button" class="btn btn-primary m-2">Save Template</button>
+      </div>
     </div>
   </body>
 </html>

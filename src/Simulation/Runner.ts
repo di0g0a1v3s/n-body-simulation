@@ -1,11 +1,11 @@
 import { Vector } from "../Geometry/Vector";
-import { Body, Universe, UniverseSnapshot } from '../Universe/Universe';
+import { Universe, UniverseSnapshot } from '../Universe/Universe';
 import { Camera } from "./Camera";
 import { Renderer } from "./Renderer";
 import { InteractionHandler } from './InteractionHandler';
 import { createLimitedQueue, LimitedQueue } from '../Utils/Utils';
 import { Canvas } from "./Canvas";
-import { randomUniverseTemplate, UniverseTemplate } from "../Universe/UniverseTemplates";
+import { UniverseTemplate } from "../Universe/UniverseTemplates";
 
 
 const MAX_SNAPSHOTS = 3000;
@@ -15,16 +15,16 @@ export type SimulationOptions = {
     readonly showGrid: boolean;
     readonly showTrails: boolean;
     readonly trackBodies: boolean;
-    readonly gravitationalConstant: number;
 }
 export class SimulationRunner {
 
     private universe: Universe;
     private renderer: Renderer;
     private prevSnapshotsQueue: LimitedQueue<UniverseSnapshot>;
+    private onFrameCallbacks: (() => void)[] = [];
     constructor(private options: SimulationOptions, private htmlCanvas: HTMLCanvasElement, universeTemplate: UniverseTemplate, setUpInteractions: boolean) {
 
-        this.universe = Universe.createFromTemplate(universeTemplate, this.options.gravitationalConstant);
+        this.universe = Universe.createFromTemplate(universeTemplate);
         const camera = new Camera();  
         const canvas = new Canvas(this.htmlCanvas);
         this.renderer = new Renderer(canvas, camera, this.options)
@@ -40,7 +40,8 @@ export class SimulationRunner {
                 this.renderer.renderUniverse(this.universe.getSnapshot(), this.prevSnapshotsQueue);
             }
             previousTimeStamp = timeStamp;
-            window.requestAnimationFrame(renderingLoop);     
+            window.requestAnimationFrame(renderingLoop);
+            this.onFrameCallbacks.forEach(cb => cb());   
         }
         window.requestAnimationFrame(renderingLoop);
 
@@ -66,13 +67,20 @@ export class SimulationRunner {
         simulationLoop();
     }
 
+    onFrame(cb: () => void) {
+        this.onFrameCallbacks.push(cb)
+    }
+
     setOptions(options: Partial<SimulationOptions>) {
         this.options = {
             ...this.options,
             ...options
         }
-        this.universe.setGravitationalConstant(this.options.gravitationalConstant);
         this.renderer.setOptions(this.options)
+    }
+
+    overrideGravitationalConstant(g: number) {
+        this.universe.setGravitationalConstant(g);
     }
 
     getOptions(): SimulationOptions {
@@ -80,9 +88,12 @@ export class SimulationRunner {
     }
 
     replaceUniverse(template: UniverseTemplate) {
-        this.universe = Universe.createFromTemplate(template, this.options.gravitationalConstant);
+        this.universe = Universe.createFromTemplate(template);
         this.prevSnapshotsQueue = createLimitedQueue(MAX_SNAPSHOTS);
         this.renderer.isFirstFrame = true;
+    }
 
+    getTemplateDataFromCurrUniverseState(): UniverseTemplate {
+       return this.universe.getTemplateDataFromCurrUniverseState();
     }
 }

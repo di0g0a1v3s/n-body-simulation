@@ -1,11 +1,10 @@
-import { Vector } from "../Geometry/Vector";
 import { Universe, UniverseSnapshot } from '../Universe/Universe';
 import { Camera } from "./Camera";
 import { Renderer } from "./Renderer";
 import { InteractionHandler } from './InteractionHandler';
 import { createLimitedQueue, LimitedQueue } from '../Utils/Utils';
 import { Canvas } from "./Canvas";
-import { randomUniverseTemplate, UniverseTemplate } from "../Universe/UniverseTemplates";
+import { UniverseTemplate } from "../Universe/UniverseTemplates";
 
 
 const MAX_SNAPSHOTS = 3000;
@@ -49,9 +48,7 @@ export class SimulationRunner {
 
 
         this.updateCount = 0;
-        let time = (new Date()).getTime();
         const simulationLoop = () => {
-            const newTime = (new Date()).getTime();
             const deltaT = 5;
             for(let i = 0; i < this.options.speed; i++) {
                 if(this.updateCount % 10 === 0) {
@@ -60,25 +57,24 @@ export class SimulationRunner {
                 this.updateCount++;
                 this.universe.updatePositions(deltaT);
             }    
-            
-            time = newTime;
+        
 
-            if(this.universe.getSnapshot().bodies.length < 4 ) {
-                this.replaceUniverse(randomUniverseTemplate());
-            }
-            this.universe.getSnapshot().bodies.forEach(b1 => {
-                this.universe.getSnapshot().bodies.forEach(b2 => {
-                    if(b1 !== b2) {
-                        if(Vector.diffBetweenPoints(b1.position, b2.position).magnitudeSquared() > 100000 * b1.radius**2) {
-                            this.replaceUniverse(randomUniverseTemplate());
-                        }
-                    }
-                })
-            })
-            if(this.updateCount > 1000000) {
-                console.log("qqq good", this.currentTemplate)
-                this.replaceUniverse(randomUniverseTemplate());
-            }
+            // if(this.universe.getSnapshot().bodies.length < 6 ) {
+            //     this.replaceUniverse(randomUniverseTemplate());
+            // }
+            // this.universe.getSnapshot().bodies.forEach(b1 => {
+            //     this.universe.getSnapshot().bodies.forEach(b2 => {
+            //         if(b1 !== b2) {
+            //             if(Vector.diffBetweenPoints(b1.position, b2.position).magnitudeSquared() > 200000 * b1.radius**2) {
+            //                 this.replaceUniverse(randomUniverseTemplate());
+            //             }
+            //         }
+            //     })
+            // })
+            // if(this.updateCount > 500000) {
+            //     console.log("qqq good", this.currentTemplate)
+            //     this.replaceUniverse(randomUniverseTemplate());
+            // }
 
             setTimeout(simulationLoop, 0);
         };

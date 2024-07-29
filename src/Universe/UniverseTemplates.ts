@@ -1,4 +1,4 @@
-import { Point, Vector } from '../Geometry/Vector';
+import { Point } from '../Geometry/Vector';
 import * as Utils from "../Utils/Utils";
 
 export type UniverseTemplate = {
@@ -16,40 +16,47 @@ export type BodyTemplate = {
 
 export function randomUniverseTemplate() {
     const bodies = [];
-    const n = 4;
+    const n = Math.ceil(Math.random()*5);
     for(let i = 0; i< n; i++) { 
-        bodies.push(randomBodyTemplate())
+        const body = randomBodyTemplate()
+        bodies.push(body)
+        // bodies.push({
+        //     mass: body.mass,
+        //     position: {x: -body.position.x, y: -body.position.y},
+        //     velocity: {x: -body.velocity.x, y: -body.velocity.y}, 
+        //     color: Utils.getRandomColor(),
+        // })
     }
-    let centerMass = new Vector(0,0);
-    let centerMassVelocity = new Vector(0,0);
-    bodies.forEach(b => 
-        centerMassVelocity = centerMassVelocity.add(Vector.fromPoint(b.velocity).scalarMultiplication(b.mass))
-    )
-    bodies.forEach(b => 
-        centerMass = centerMass.add(Vector.fromPoint(b.position).scalarMultiplication(b.mass))
-    )
-    const oneOverTotalMass = 1/bodies.reduce((mass, b) => mass + b.mass, 0)
-    centerMassVelocity = centerMassVelocity.scalarMultiplication(oneOverTotalMass)
-    centerMass = centerMass.scalarMultiplication(oneOverTotalMass)
-    const bodiesNormalized = bodies.map(
-        b => ({
-                ...b, 
-                velocity: {
-                    x: Vector.fromPoint(b.velocity).diff(centerMassVelocity).x, 
-                    y: Vector.fromPoint(b.velocity).diff(centerMassVelocity).y
-                },
-                position: {
-                    x: Vector.fromPoint(b.position).diff(centerMass).x, 
-                    y: Vector.fromPoint(b.position).diff(centerMass).y
-                },
-            })
-        )
-    centerMassVelocity = new Vector(0,0);
-    bodiesNormalized.forEach(b => centerMassVelocity.add(Vector.fromPoint(b.velocity)))
+    // let centerMass = new Vector(0,0);
+    // let centerMassVelocity = new Vector(0,0);
+    // bodies.forEach(b => 
+    //     centerMassVelocity = centerMassVelocity.add(Vector.fromPoint(b.velocity).scalarMultiplication(b.mass))
+    // )
+    // bodies.forEach(b => 
+    //     centerMass = centerMass.add(Vector.fromPoint(b.position).scalarMultiplication(b.mass))
+    // )
+    // const oneOverTotalMass = 1/bodies.reduce((mass, b) => mass + b.mass, 0)
+    // centerMassVelocity = centerMassVelocity.scalarMultiplication(oneOverTotalMass)
+    // centerMass = centerMass.scalarMultiplication(oneOverTotalMass)
+    // const bodiesNormalized = bodies.map(
+    //     b => ({
+    //             ...b, 
+    //             velocity: {
+    //                 x: Vector.fromPoint(b.velocity).diff(centerMassVelocity).x, 
+    //                 y: Vector.fromPoint(b.velocity).diff(centerMassVelocity).y
+    //             },
+    //             position: {
+    //                 x: Vector.fromPoint(b.position).diff(centerMass).x, 
+    //                 y: Vector.fromPoint(b.position).diff(centerMass).y
+    //             },
+    //         })
+    //     )
+    // centerMassVelocity = new Vector(0,0);
+    // bodiesNormalized.forEach(b => centerMassVelocity.add(Vector.fromPoint(b.velocity)))
     const template = {
         name: "Random",
         gravitationalConstant: 0.0001,
-        bodies: bodiesNormalized
+        bodies
     }
     return template;
 }
@@ -394,7 +401,8 @@ export const listOfTemplates: UniverseTemplate[] = [
                 "color": "#94E237"
             }
         ]
-    }, {
+    }, 
+    {
         "name": "3B-5",
         "gravitationalConstant": 0.0001,
         "bodies": [
@@ -435,49 +443,9 @@ export const listOfTemplates: UniverseTemplate[] = [
                 }
             }
         ]
-    }, {
-        "name": "3B-6",
-        "gravitationalConstant": 0.0001,
-        "bodies": [
-            {
-                "mass": 200000,
-                "position": {
-                    "x": 5000,
-                    "y": 1500
-                },
-                "velocity": {
-                    "x": 0,
-                    "y": -0.03
-                },
-                "color": "#91684B"
-            },
-            {
-                "mass": 200000,
-                "position": {
-                    "x": 0,
-                    "y": -1500
-                },
-                "velocity": {
-                    "x": 0,
-                    "y": 0.03
-                },
-                "color": "#7B9A86"
-            },
-            {
-                "mass": 200000,
-                "position": {
-                    "x": -20000,
-                    "y": 0
-                },
-                "velocity": {
-                    "x": 0,
-                    "y": 0.05
-                },
-                "color": "#7B9A86"
-            }
-        ]}, 
+    }, 
         {
-            "name": "3B-7",
+            "name": "3B-6",
             "gravitationalConstant": 0.0001,
             "bodies": [
                 {
@@ -518,51 +486,9 @@ export const listOfTemplates: UniverseTemplate[] = [
                 }
             ]
         },
+
         {
-            "name": "3B-8",
-            "gravitationalConstant": 0.0001,
-            "bodies": [
-                {
-                    "mass": 20000,
-                    "position": {
-                        "x": 3637.6275015369793,
-                        "y": 3367.7548972895142
-                    },
-                    "velocity": {
-                        "x": -0.003874286574997221,
-                        "y": -0.036748534420335544
-                    },
-                    "color": "#FDE511"
-                },
-                {
-                    "mass": 20000,
-                    "position": {
-                        "x": 634.2602560931416,
-                        "y": 2224.316449832225
-                    },
-                    "velocity": {
-                        "x": 0.02078904006422584,
-                        "y": 0.017161507185227243
-                    },
-                    "color": "#708E33"
-                },
-                {
-                    "mass": 20000,
-                    "position": {
-                        "x": 1902.60669847833,
-                        "y": 3651.4924410904596
-                    },
-                    "velocity": {
-                        "x": -0.016080966282761587,
-                        "y": 0.04671213966543908
-                    },
-                    "color": "#E43AD2"
-                }
-            ]
-        },
-        
-        {
-            "name": "3B-9",
+            "name": "3B-7",
             "gravitationalConstant": 0.0001,
             "bodies": [
                 {
@@ -603,51 +529,9 @@ export const listOfTemplates: UniverseTemplate[] = [
                 }
             ]
         },
-        {
-            "name": "3B-10",
-            "gravitationalConstant": 0.0001,
-            "bodies": [
-                {
-                    "mass": 20000,
-                    "position": {
-                        "x": 2184.6169000635127,
-                        "y": 328.7304718310384
-                    },
-                    "velocity": {
-                        "x": 0.03168079032388185,
-                        "y": 0.046761693975421736
-                    },
-                    "color": "#04F671"
-                },
-                {
-                    "mass": 20000,
-                    "position": {
-                        "x": 1631.9294097467214,
-                        "y": 1087.3523943969722
-                    },
-                    "velocity": {
-                        "x": -0.011116763277786365,
-                        "y": 0.009703549686475223
-                    },
-                    "color": "#AA9A2D"
-                },
-                {
-                    "mass": 20000,
-                    "position": {
-                        "x": 3907.0573043412837,
-                        "y": 2689.9860177331575
-                    },
-                    "velocity": {
-                        "x": 0.03331519977306896,
-                        "y": -0.02694066453662025
-                    },
-                    "color": "#0B6D4B"
-                }
-            ]
-        },
         
         {
-            "name": "3B-11",
+            "name": "3B-8",
             "gravitationalConstant": 0.0001,
             "bodies": [
                 {
@@ -725,51 +609,9 @@ export const listOfTemplates: UniverseTemplate[] = [
             ]
         },
         
-        {
-            "name": "3B-12",
-            "gravitationalConstant": 0.0001,
-            "bodies": [
-                {
-                    "mass": 20000,
-                    "position": {
-                        "x": 40.175617257619706,
-                        "y": -1294.9410563831154
-                    },
-                    "velocity": {
-                        "x": 0.005578056824648955,
-                        "y": -0.012515788777820919
-                    },
-                    "color": "#1838B5"
-                },
-                {
-                    "mass": 20000,
-                    "position": {
-                        "x": 566.8910729324637,
-                        "y": -548.6401838829297
-                    },
-                    "velocity": {
-                        "x": -0.04136208719974804,
-                        "y": 0.009655134527497208
-                    },
-                    "color": "#5A28E5"
-                },
-                {
-                    "mass": 20000,
-                    "position": {
-                        "x": -607.0666901900843,
-                        "y": 1843.5812402660451
-                    },
-                    "velocity": {
-                        "x": 0.035784030375099085,
-                        "y": 0.0028606542503237242
-                    },
-                    "color": "#092D22"
-                }
-            ]
-        },
         
         {
-            "name": "3B-13",
+            "name": "3B-9",
             "gravitationalConstant": 0.0001,
             "bodies": [
                 {
@@ -812,7 +654,7 @@ export const listOfTemplates: UniverseTemplate[] = [
         },
         
         {
-            "name": "3B-14",
+            "name": "3B-10",
             "gravitationalConstant": 0.0001,
             "bodies": [
                 {
@@ -854,180 +696,10 @@ export const listOfTemplates: UniverseTemplate[] = [
             ]
         },
         
-        {
-            "name": "3B-15",
-            "gravitationalConstant": 0.0001,
-            "bodies": [
-                {
-                    "mass": 20000,
-                    "position": {
-                        "x": -2086.3164394439154,
-                        "y": 575.9530906420823
-                    },
-                    "velocity": {
-                        "x": -0.020228033244370603,
-                        "y": -0.021093754681191127
-                    },
-                    "color": "#F8BCB9"
-                },
-                {
-                    "mass": 20000,
-                    "position": {
-                        "x": 1001.596740640452,
-                        "y": 206.99314851023337
-                    },
-                    "velocity": {
-                        "x": 0.03571722283069195,
-                        "y": 0.02198651345217038
-                    },
-                    "color": "#19BF5F"
-                },
-                {
-                    "mass": 20000,
-                    "position": {
-                        "x": 1084.719698803462,
-                        "y": -782.9462391523157
-                    },
-                    "velocity": {
-                        "x": -0.015489189586321343,
-                        "y": -0.0008927587709792496
-                    },
-                    "color": "#CEFCCD"
-                }
-            ]
-        },
+        
         
         {
-            "name": "3B-16",
-            "gravitationalConstant": 0.0001,
-            "bodies": [
-                {
-                    "mass": 20000,
-                    "position": {
-                        "x": -801.1883438388347,
-                        "y": 188.49414932380705
-                    },
-                    "velocity": {
-                        "x": 0.041421693198502495,
-                        "y": -0.01712407680679156
-                    },
-                    "color": "#1E50B1"
-                },
-                {
-                    "mass": 20000,
-                    "position": {
-                        "x": -963.2815382284045,
-                        "y": -671.0307560889665
-                    },
-                    "velocity": {
-                        "x": -0.01908447586789718,
-                        "y": -0.009003640577133855
-                    },
-                    "color": "#2BBF47"
-                },
-                {
-                    "mass": 20000,
-                    "position": {
-                        "x": 1764.4698820672388,
-                        "y": 482.5366067651594
-                    },
-                    "velocity": {
-                        "x": -0.022337217330605307,
-                        "y": 0.026127717383925414
-                    },
-                    "color": "#809C84"
-                }
-            ]
-        },
-        
-        {
-            "name": "3B-17",
-            "gravitationalConstant": 0.0001,
-            "bodies": [
-                {
-                    "mass": 20000,
-                    "position": {
-                        "x": -709.8941590380969,
-                        "y": -131.52054041923407
-                    },
-                    "velocity": {
-                        "x": 0.049055559152956896,
-                        "y": 0.004767909558990395
-                    },
-                    "color": "#B8D345"
-                },
-                {
-                    "mass": 20000,
-                    "position": {
-                        "x": 895.231098647861,
-                        "y": 831.2258014635245
-                    },
-                    "velocity": {
-                        "x": -0.04458095917289878,
-                        "y": 0.022662953973981118
-                    },
-                    "color": "#BBCA1C"
-                },
-                {
-                    "mass": 20000,
-                    "position": {
-                        "x": -185.3369396097646,
-                        "y": -699.7052610442911
-                    },
-                    "velocity": {
-                        "x": -0.004474599980058112,
-                        "y": -0.027430863532971514
-                    },
-                    "color": "#3A7CB8"
-                }
-            ]
-        },
-        
-        {
-            "name": "3B-18",
-            "gravitationalConstant": 0.0001,
-            "bodies": [
-                {
-                    "mass": 20000,
-                    "position": {
-                        "x": 470.567897044132,
-                        "y": -195.792616752271
-                    },
-                    "velocity": {
-                        "x": -0.048462828313590126,
-                        "y": -0.01174487708437861
-                    },
-                    "color": "#4B86D3"
-                },
-                {
-                    "mass": 20000,
-                    "position": {
-                        "x": -801.2821556308938,
-                        "y": 1100.81859076039
-                    },
-                    "velocity": {
-                        "x": 0.02445510316931583,
-                        "y": 0.04045921276102687
-                    },
-                    "color": "#39B758"
-                },
-                {
-                    "mass": 20000,
-                    "position": {
-                        "x": 330.71425858676184,
-                        "y": -905.0259740081192
-                    },
-                    "velocity": {
-                        "x": 0.024007725144274294,
-                        "y": -0.028714335676648252
-                    },
-                    "color": "#B3D1FE"
-                }
-            ]
-        },
-        
-        {
-            "name": "3B-19",
+            "name": "3B-11",
             "gravitationalConstant": 0.0001,
             "bodies": [
                 {
@@ -1065,6 +737,747 @@ export const listOfTemplates: UniverseTemplate[] = [
                         "y": -0.03844510280991534
                     },
                     "color": "#B86C53"
+                }
+            ]
+        },
+        {
+            "name": "4B-1",
+            "gravitationalConstant": 0.0001,
+            "bodies": [
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 891.6632883291022,
+                        "y": 3980.8909705535775
+                    },
+                    "velocity": {
+                        "x": 0.025608051118972117,
+                        "y": 0.02092652967455874
+                    },
+                    "color": "#E1223A"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -891.6632883291022,
+                        "y": -3980.8909705535775
+                    },
+                    "velocity": {
+                        "x": -0.025608051118972117,
+                        "y": -0.02092652967455874
+                    },
+                    "color": "#1931ED"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 3361.214583576066,
+                        "y": 3088.9576879366523
+                    },
+                    "velocity": {
+                        "x": -0.020390732894171395,
+                        "y": -0.019498124699711974
+                    },
+                    "color": "#1DB0B1"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -3361.214583576066,
+                        "y": -3088.9576879366523
+                    },
+                    "velocity": {
+                        "x": 0.020390732894171395,
+                        "y": 0.019498124699711974
+                    },
+                    "color": "#EF9178"
+                }
+            ]
+        },
+        {
+            "name": "4B-2",
+            "gravitationalConstant": 0.0001,
+            "bodies": [
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 3640.904711127118,
+                        "y": 3058.0582003733234
+                    },
+                    "velocity": {
+                        "x": -0.01190611965893322,
+                        "y": -0.012492397324484969
+                    },
+                    "color": "#62B865"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -3640.904711127118,
+                        "y": -3058.0582003733234
+                    },
+                    "velocity": {
+                        "x": 0.01190611965893322,
+                        "y": 0.012492397324484969
+                    },
+                    "color": "#9E8378"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 2155.770998668889,
+                        "y": 3614.7675061186233
+                    },
+                    "velocity": {
+                        "x": -0.008264839441149086,
+                        "y": 0.03886094609997155
+                    },
+                    "color": "#A0CC0C"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -2155.770998668889,
+                        "y": -3614.7675061186233
+                    },
+                    "velocity": {
+                        "x": 0.008264839441149086,
+                        "y": -0.03886094609997155
+                    },
+                    "color": "#8C1964"
+                }
+            ]
+        },
+        {
+            "name": "4B-3",
+            "gravitationalConstant": 0.0001,
+            "bodies": [
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 177.28051060481232,
+                        "y": 88.28272293028672
+                    },
+                    "velocity": {
+                        "x": -0.03407034695968323,
+                        "y": 0.044596289065394396
+                    },
+                    "color": "#71543B"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -177.28051060481232,
+                        "y": -88.28272293028672
+                    },
+                    "velocity": {
+                        "x": 0.03407034695968323,
+                        "y": -0.044596289065394396
+                    },
+                    "color": "#AFE422"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 2724.7565452152094,
+                        "y": 2457.5577081927077
+                    },
+                    "velocity": {
+                        "x": -0.017568393043495646,
+                        "y": 0.03971501793221642
+                    },
+                    "color": "#A73559"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -2724.7565452152094,
+                        "y": -2457.5577081927077
+                    },
+                    "velocity": {
+                        "x": 0.017568393043495646,
+                        "y": -0.03971501793221642
+                    },
+                    "color": "#9F2A06"
+                }
+            ]
+        },
+        {
+            "name": "4B-4",
+            "gravitationalConstant": 0.0001,
+            "bodies": [
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 1268.1602868526136,
+                        "y": 3707.007903459789
+                    },
+                    "velocity": {
+                        "x": 0.007341327465382873,
+                        "y": -0.04985718132646795
+                    },
+                    "color": "#BFB4F2"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -1268.1602868526136,
+                        "y": -3707.007903459789
+                    },
+                    "velocity": {
+                        "x": -0.007341327465382873,
+                        "y": 0.04985718132646795
+                    },
+                    "color": "#3B7FA1"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 610.9612444243533,
+                        "y": 3680.970603719609
+                    },
+                    "velocity": {
+                        "x": 0.013027255881220973,
+                        "y": 0.019930553146882232
+                    },
+                    "color": "#5CE3D1"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -610.9612444243533,
+                        "y": -3680.970603719609
+                    },
+                    "velocity": {
+                        "x": -0.013027255881220973,
+                        "y": -0.019930553146882232
+                    },
+                    "color": "#891891"
+                }
+            ]
+        },
+        
+        {
+            "name": "4B-5",
+            "gravitationalConstant": 0.0001,
+            "bodies": [
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 3785.1216141302,
+                        "y": 3520.0880527034
+                    },
+                    "velocity": {
+                        "x": 0.02642036456757209,
+                        "y": 0.00950902377881202
+                    },
+                    "color": "#01CB2A"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -3785.1216141302,
+                        "y": -3520.0880527034
+                    },
+                    "velocity": {
+                        "x": -0.02642036456757209,
+                        "y": -0.00950902377881202
+                    },
+                    "color": "#B03E1F"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 2463.5855933124626,
+                        "y": 45.91722896882189
+                    },
+                    "velocity": {
+                        "x": -0.007464504812483286,
+                        "y": 0.0256803355954016
+                    },
+                    "color": "#7F7C11"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -2463.5855933124626,
+                        "y": -45.91722896882189
+                    },
+                    "velocity": {
+                        "x": 0.007464504812483286,
+                        "y": -0.0256803355954016
+                    },
+                    "color": "#C019D1"
+                }
+            ]
+        },
+        
+        {
+            "name": "6B-1",
+            "gravitationalConstant": 0.0001,
+            "bodies": [
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 1804.7096517630105,
+                        "y": 2604.0071729241845
+                    },
+                    "velocity": {
+                        "x": -0.04564907708930808,
+                        "y": -0.02201886278734897
+                    },
+                    "color": "#9C97F8"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -1804.7096517630105,
+                        "y": -2604.0071729241845
+                    },
+                    "velocity": {
+                        "x": 0.04564907708930808,
+                        "y": 0.02201886278734897
+                    },
+                    "color": "#D9408D"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 3121.8178666603453,
+                        "y": 516.3251017207626
+                    },
+                    "velocity": {
+                        "x": -0.026405932258366606,
+                        "y": 0.04316101013975142
+                    },
+                    "color": "#BA632E"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -3121.8178666603453,
+                        "y": -516.3251017207626
+                    },
+                    "velocity": {
+                        "x": 0.026405932258366606,
+                        "y": -0.04316101013975142
+                    },
+                    "color": "#2ADBD9"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 3950.655338470112,
+                        "y": 3920.2630832550235
+                    },
+                    "velocity": {
+                        "x": 0.006811780820537419,
+                        "y": -0.004463587746573808
+                    },
+                    "color": "#A3073A"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -3950.655338470112,
+                        "y": -3920.2630832550235
+                    },
+                    "velocity": {
+                        "x": -0.006811780820537419,
+                        "y": 0.004463587746573808
+                    },
+                    "color": "#E00ABC"
+                }
+            ]
+        },
+        {
+            "name": "6B-2",
+            "gravitationalConstant": 0.0001,
+            "bodies": [
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 3287.038259311016,
+                        "y": 1994.123702490529
+                    },
+                    "velocity": {
+                        "x": 0.0459991376848428,
+                        "y": 0.022458376881025366
+                    },
+                    "color": "#D29725"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -3287.038259311016,
+                        "y": -1994.123702490529
+                    },
+                    "velocity": {
+                        "x": -0.0459991376848428,
+                        "y": -0.022458376881025366
+                    },
+                    "color": "#4A4DE6"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 1.1608051045577383,
+                        "y": 3579.2306613697324
+                    },
+                    "velocity": {
+                        "x": 0.005501013020022906,
+                        "y": -0.03656172410666969
+                    },
+                    "color": "#00836F"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -1.1608051045577383,
+                        "y": -3579.2306613697324
+                    },
+                    "velocity": {
+                        "x": -0.005501013020022906,
+                        "y": 0.03656172410666969
+                    },
+                    "color": "#0FEC53"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 584.7708210099088,
+                        "y": 2355.5758056355166
+                    },
+                    "velocity": {
+                        "x": 0.03968739911014352,
+                        "y": -0.0030475730347815783
+                    },
+                    "color": "#1BCAFB"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -584.7708210099088,
+                        "y": -2355.5758056355166
+                    },
+                    "velocity": {
+                        "x": -0.03968739911014352,
+                        "y": 0.0030475730347815783
+                    },
+                    "color": "#0AF7A7"
+                }
+            ]
+        },
+        {
+            "name": "6B-3",
+            "gravitationalConstant": 0.0001,
+            "bodies": [
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 3848.0919341586405,
+                        "y": 3557.178468282305
+                    },
+                    "velocity": {
+                        "x": 0.034829292296194456,
+                        "y": -0.028446423370734622
+                    },
+                    "color": "#C4FDEB"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -3848.0919341586405,
+                        "y": -3557.178468282305
+                    },
+                    "velocity": {
+                        "x": -0.034829292296194456,
+                        "y": 0.028446423370734622
+                    },
+                    "color": "#F6CBCC"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 3204.3360578086294,
+                        "y": 2904.7759569279438
+                    },
+                    "velocity": {
+                        "x": -0.04523143206004914,
+                        "y": 0.04694024687494357
+                    },
+                    "color": "#5320E5"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -3204.3360578086294,
+                        "y": -2904.7759569279438
+                    },
+                    "velocity": {
+                        "x": 0.04523143206004914,
+                        "y": -0.04694024687494357
+                    },
+                    "color": "#9F8DFD"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 1051.5324563646561,
+                        "y": 1400.9927792901049
+                    },
+                    "velocity": {
+                        "x": 0.005359299078892189,
+                        "y": 0.036136162680441355
+                    },
+                    "color": "#C5E57F"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -1051.5324563646561,
+                        "y": -1400.9927792901049
+                    },
+                    "velocity": {
+                        "x": -0.005359299078892189,
+                        "y": -0.036136162680441355
+                    },
+                    "color": "#7CF86A"
+                }
+            ]
+        },
+        {
+            "name": "6B-4",
+            "gravitationalConstant": 0.0001,
+            "bodies": [
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 409.98812096503025,
+                        "y": 3380.651299806729
+                    },
+                    "velocity": {
+                        "x": -0.025145065889019658,
+                        "y": -0.026772190791488317
+                    },
+                    "color": "#04794F"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -409.98812096503025,
+                        "y": -3380.651299806729
+                    },
+                    "velocity": {
+                        "x": 0.025145065889019658,
+                        "y": 0.026772190791488317
+                    },
+                    "color": "#8A35D2"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 3356.0234007783533,
+                        "y": 3664.9914272510173
+                    },
+                    "velocity": {
+                        "x": -0.038797830002428535,
+                        "y": 0.026882543552262203
+                    },
+                    "color": "#D4D29E"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -3356.0234007783533,
+                        "y": -3664.9914272510173
+                    },
+                    "velocity": {
+                        "x": 0.038797830002428535,
+                        "y": -0.026882543552262203
+                    },
+                    "color": "#815E06"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 3780.8866952046465,
+                        "y": 2542.861492029577
+                    },
+                    "velocity": {
+                        "x": 0.04554149693904663,
+                        "y": -0.002810917100975918
+                    },
+                    "color": "#285EAD"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -3780.8866952046465,
+                        "y": -2542.861492029577
+                    },
+                    "velocity": {
+                        "x": -0.04554149693904663,
+                        "y": 0.002810917100975918
+                    },
+                    "color": "#04EEE5"
+                }
+            ]
+        },
+        
+        {
+            "name": "6B-5",
+            "gravitationalConstant": 0.0001,
+            "bodies": [
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 1097.0024015658835,
+                        "y": 3894.773354137394
+                    },
+                    "velocity": {
+                        "x": 0.0055991791719144784,
+                        "y": 0.03213526780357223
+                    },
+                    "color": "#8D9BD7"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -1097.0024015658835,
+                        "y": -3894.773354137394
+                    },
+                    "velocity": {
+                        "x": -0.0055991791719144784,
+                        "y": -0.03213526780357223
+                    },
+                    "color": "#43107B"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 1340.788156135167,
+                        "y": 654.492259401473
+                    },
+                    "velocity": {
+                        "x": -0.03342622116874874,
+                        "y": -0.04123202459944169
+                    },
+                    "color": "#5AD513"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -1340.788156135167,
+                        "y": -654.492259401473
+                    },
+                    "velocity": {
+                        "x": 0.03342622116874874,
+                        "y": 0.04123202459944169
+                    },
+                    "color": "#934E2D"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 3414.1784603327715,
+                        "y": 1437.282255577733
+                    },
+                    "velocity": {
+                        "x": 0.029878476867612025,
+                        "y": -0.03602825755851265
+                    },
+                    "color": "#49A815"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -3414.1784603327715,
+                        "y": -1437.282255577733
+                    },
+                    "velocity": {
+                        "x": -0.029878476867612025,
+                        "y": 0.03602825755851265
+                    },
+                    "color": "#ADA999"
+                }
+            ]
+        },
+        {
+            "name": "6B-6",
+            "gravitationalConstant": 0.0001,
+            "bodies": [
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 1172.4288022370147,
+                        "y": 2523.6202986335725
+                    },
+                    "velocity": {
+                        "x": 0.04205857520575694,
+                        "y": -0.04559755020665571
+                    },
+                    "color": "#393DE2"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -1172.4288022370147,
+                        "y": -2523.6202986335725
+                    },
+                    "velocity": {
+                        "x": -0.04205857520575694,
+                        "y": 0.04559755020665571
+                    },
+                    "color": "#9DC10A"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 1180.2334484764021,
+                        "y": 3478.458986749497
+                    },
+                    "velocity": {
+                        "x": -0.0492482235198578,
+                        "y": 0.003051225502795997
+                    },
+                    "color": "#91AB31"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -1180.2334484764021,
+                        "y": -3478.458986749497
+                    },
+                    "velocity": {
+                        "x": 0.0492482235198578,
+                        "y": -0.003051225502795997
+                    },
+                    "color": "#8A9F10"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": 3683.634254060266,
+                        "y": 1205.2267236259374
+                    },
+                    "velocity": {
+                        "x": 0.0047098895033240926,
+                        "y": 0.04368784646429161
+                    },
+                    "color": "#188BA5"
+                },
+                {
+                    "mass": 20000,
+                    "position": {
+                        "x": -3683.634254060266,
+                        "y": -1205.2267236259374
+                    },
+                    "velocity": {
+                        "x": -0.0047098895033240926,
+                        "y": -0.04368784646429161
+                    },
+                    "color": "#7AEA87"
                 }
             ]
         },

@@ -1,6 +1,5 @@
 TODOS:
 - Add, delete
-- Find stable orbits
 
 
 # Getting Started with Create React App

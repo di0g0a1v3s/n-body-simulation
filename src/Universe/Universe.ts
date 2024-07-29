@@ -1,5 +1,7 @@
 import { Point, Vector } from '../Geometry/Vector';
-import { getRandomColor, BodyTemplate, UniverseTemplate } from './UniverseTemplates';
+import { BodyTemplate, UniverseTemplate } from './UniverseTemplates';
+import * as Utils from "../Utils/Utils";
+import { colorAverage } from '../Utils/Utils';
 
 const COLLISION_TOLERANCE_PERCENTAGE = 0
 
@@ -20,8 +22,8 @@ export class Body {
     private _velocity: Vector;
     private _position: Point;
     private _color: string;
-    static create(mass: number, position: Point, velocity: Vector) {
-        return new this(mass, Math.sqrt(mass), position, velocity, getRandomColor());
+    static create(mass: number, position: Point, velocity: Vector, color?: string | null) {
+        return new this(mass, Math.sqrt(mass), position, velocity, color ?? Utils.getRandomColor());
     }
 
     static createFromTemplate(bodyTempalte: BodyTemplate) {
@@ -153,7 +155,8 @@ export class Universe {
                         // center of mass of two bodies: xf = (x1 * m1 + x2 * m2)/(m1 + m2)
                         Vector.fromPoint(body1.position).scalarMultiplication(body1.mass/newMass).add(Vector.fromPoint(body2.position).scalarMultiplication(body2.mass/newMass)),
                         // conservation of linear momentum: vf = (v1 * m1 + v2 * m2)/(m1 + m2)
-                        body1.velocity.scalarMultiplication(body1.mass/newMass).add(body2.velocity.scalarMultiplication(body2.mass/newMass))
+                        body1.velocity.scalarMultiplication(body1.mass/newMass).add(body2.velocity.scalarMultiplication(body2.mass/newMass)),
+                        colorAverage(body1.color, body2.color, body1.mass, body2.mass)
                     )
                     this.bodies.splice(indexBody2, 1)
                 }

@@ -1,4 +1,5 @@
 import { Point } from '../Geometry/Vector';
+import * as Utils from "../Utils/Utils";
 
 export type UniverseTemplate = {
     readonly name: string;
@@ -32,21 +33,14 @@ function randomBodyTemplate() {
         mass: 20000,
         position: {x: Math.random()*4000, y: Math.random()*4000},
         velocity: {x: Math.random()*0.2 - 0.1, y: Math.random()*0.2 - 0.1}, 
-        color: getRandomColor(),
+        color: Utils.getRandomColor(),
     }
     return ret;
 }
 
-export function getRandomColor() {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
 let p = 150
 let w = 0.0113
+
 export const listOfTemplates: UniverseTemplate[] = [
     {
         name: "Snake",

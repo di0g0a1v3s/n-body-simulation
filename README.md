@@ -1,7 +1,6 @@
 TODOS:
 - Stop simulations if window is closed
 - Add, delete
-- deterministic color for collision
 - Find stable orbits
 
 

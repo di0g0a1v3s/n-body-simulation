@@ -70,12 +70,6 @@ export class UiController {
         });
 
         this.updateUiComponentsWithOptions(DEFAULT_SIMULATION_OPTIONS);
-
-        (window as any).setUniverse = (str: string) => {
-            const template = JSON.parse(str) as UniverseTemplate;
-            this.gControl.value = template.gravitationalConstant.toString();
-            this.simulation.replaceUniverse(template);
-        }
     }
 
     updateUiComponentsWithOptions(simulationOptions: SimulationOptions) {

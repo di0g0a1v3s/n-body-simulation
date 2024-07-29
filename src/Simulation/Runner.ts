@@ -31,6 +31,9 @@ export class SimulationRunner {
         if(setUpInteractions) {
             InteractionHandler.setUpHandlers(camera, canvas)
         }
+        let tabHidden = false;
+
+        document.addEventListener("visibilitychange", () => tabHidden = document.hidden);
 
         this.prevSnapshotsQueue = createLimitedQueue(MAX_SNAPSHOTS);
         
@@ -49,13 +52,15 @@ export class SimulationRunner {
         let updateCount = 0;
         let time = (new Date()).getTime();
         const simulationLoop = () => {
-            const newTime = (new Date()).getTime()
-            for(let i = 0; i < this.options.speed; i++) {
-                if(updateCount % 10 === 0) {
-                    this.prevSnapshotsQueue.push(this.universe.getSnapshot());
-                }
-                updateCount++;
-                this.universe.updatePositions((newTime - time));
+            const newTime = (new Date()).getTime();
+            if(!tabHidden) {
+                for(let i = 0; i < this.options.speed; i++) {
+                    if(updateCount % 10 === 0) {
+                        this.prevSnapshotsQueue.push(this.universe.getSnapshot());
+                    }
+                    updateCount++;
+                    this.universe.updatePositions((newTime - time));
+                }    
             }
             time = newTime;
             // if(this.universe.getSnapshot().bodies.length < 3 ) {

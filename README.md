@@ -1,5 +1,4 @@
 TODOS:
-- Stop simulations if window is closed
 - Add, delete
 - Find stable orbits
 

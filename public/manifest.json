@@ -1,0 +1,9 @@
+{
+    "short_name": "N-Body Simulation",
+    "name": "N-Body Simulation",
+    "icons": [],
+    "start_url": ".",
+    "display": "standalone",
+    "theme_color": "#000000",
+    "background_color": "#ffffff"
+  }

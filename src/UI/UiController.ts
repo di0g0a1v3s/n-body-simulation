@@ -93,9 +93,9 @@ export class UiController {
                                 </div>
                                 <div class="input-group mb-1">
                                     <span class="input-group-text">X</span>
-                                    <input type="text" class="form-control" placeholder="${placeholderX}" id="y-input">
+                                    <input type="text" class="form-control" placeholder="${placeholderX}" id="x-input">
                                     <span class="input-group-text">Y</span>
-                                    <input type="text" class="form-control" placeholder="${placeholderY}" id="x-input">
+                                    <input type="text" class="form-control" placeholder="${placeholderY}" id="y-input">
                                 </div>
                                 <div class="input-group mb-1">
                                     <span class="input-group-text">Vx</span>

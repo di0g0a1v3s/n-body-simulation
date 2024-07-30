@@ -1,48 +1,28 @@
+# N-Body Simulation
 
+You can try it here: https://n-body-simulation-cb6d1.web.app/
 
-# Getting Started with Create React App
+https://github.com/user-attachments/assets/cda9278e-4e5b-4d44-b580-4195bc6c0c40
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Descripton
 
-## Available Scripts
+This application allows you to visualize and interact with a dynamic simulation of multiple celestial bodies influenced by gravitational forces. Built with TypeScript, this app provides a user-friendly interface to explore the complex behaviors of n-body systems.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- Real-time Simulation: Watch the bodies interact in real-time as they move under gravitational forces.
+- Customizable Parameters: Adjust the number of bodies, their masses, initial positions, velocities, simulation speed and gravitational force.
+- Interactive Interface: Drag to pan and scroll to zoom in and out to explore different regions of the simulation.
+- Template Orbits: Choose from a list of pre-designed templates showcasing aesthetically pleasing n-body orbits.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Deployment
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+This project is hosted on Firebase. Everytime there is a change on the master branch, Github Actions will automatically trigger a re-deploy.
 
-### `npm test`
+### Technical details
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The app was implemented using Typescript. The simulation is rendered on an HTML canvas, without the use of third party libraries.
 
-### `npm run build`
+### Developing
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+To develop locally, simply clone the repo and run `npm start`

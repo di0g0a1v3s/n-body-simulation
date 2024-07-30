@@ -93,8 +93,16 @@ export class Universe {
         return this.gravitationalContant;
     }
 
-    private addBody(body: Body){
+    private addBody(body: Body) {
         this.bodies.push(body)
+    }
+
+    public addBodyFromTemplate(body: BodyTemplate) {
+        this.bodies.push(Body.createFromTemplate(body))
+    }
+
+    public deleteBody(index: number) {
+        this.bodies.splice(index, 1);
     }
 
     private collidingBodies(body1: Body, body2: Body) {

@@ -1481,30 +1481,4 @@ export const listOfTemplates: UniverseTemplate[] = [
                 }
             ]
         },
-        
-]
-
-
-// lagrange orbit
-// let p = 150
-// let w = 0.0113
-// universe.addBody(Body.create(200, new Vector(0, p), new Vector(-w, 0)));
-// universe.addBody(Body.create(200, new Vector(-p*Math.cos(Math.PI/6), -p*Math.sin(Math.PI/6)), new Vector(w*Math.sin(Math.PI/6), -w*Math.cos(Math.PI/6))));
-// universe.addBody(Body.create(200, new Vector(p*Math.cos(Math.PI/6), -p*Math.sin(Math.PI/6)), new Vector(w*Math.sin(Math.PI/6), w*Math.cos(Math.PI/6))));
-
-// lagrange orbit
-// let p = 100
-// let w = 0.011
-// this.universe.addBody(Body.create(200, new Vector(0, p), new Vector(-w, 0)));
-// this.universe.addBody(Body.create(200, new Vector(-p*Math.cos(Math.PI/6), -p*Math.sin(Math.PI/6)), new Vector(w*Math.sin(Math.PI/6), -w*Math.cos(Math.PI/6))));
-// this.universe.addBody(Body.create(200, new Vector(p*Math.cos(Math.PI/6), -p*Math.sin(Math.PI/6)), new Vector(w*Math.sin(Math.PI/6), w*Math.cos(Math.PI/6))));
-
-// small and big
-// universe.addBody(Body.create(400, new Vector(-496.3557156278445, 203.97775132610263), new Vector(-0.0011535626878914993, -0.0004451886338150743)));
-// universe.addBody(Body.create(200, new Vector(992.7114312523858, -407.95550264951805), new Vector(0.0023071253757824643, 0.0008903772676305858)));
-
-// solar system
-// this.universe.addBody(Body.create(20000, new Vector(0, 0), new Vector(0, 0)));
-// this.universe.addBody(Body.create(20, new Vector(500, 0), new Vector(0, -0.06)));
-// this.universe.addBody(Body.create(20, new Vector(-500, 0), new Vector(0, 0.06)));
-// this.universe.addBody(Body.create(50, new Vector(1000, 0), new Vector(0, -0.044)));
+];

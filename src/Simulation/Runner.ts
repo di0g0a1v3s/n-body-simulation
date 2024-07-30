@@ -4,7 +4,7 @@ import { Renderer } from "./Renderer";
 import { InteractionHandler } from './InteractionHandler';
 import { createLimitedQueue, LimitedQueue } from '../Utils/Utils';
 import { Canvas } from "./Canvas";
-import { UniverseTemplate } from "../Universe/UniverseTemplates";
+import { UniverseTemplate, BodyTemplate } from '../Universe/UniverseTemplates';
 
 
 const MAX_SNAPSHOTS = 3000;
@@ -107,6 +107,14 @@ export class SimulationRunner {
         this.universe = Universe.createFromTemplate(template);
         this.prevSnapshotsQueue = createLimitedQueue(MAX_SNAPSHOTS);
         this.renderer.isFirstFrame = true;
+    }
+
+    addBody(body: BodyTemplate) {
+        this.universe.addBodyFromTemplate(body)
+    }
+
+    deleteBody(index: number) {
+        this.universe.deleteBody(index)
     }
 
     getTemplateDataFromCurrUniverseState(): UniverseTemplate {

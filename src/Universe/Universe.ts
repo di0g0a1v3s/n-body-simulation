@@ -122,7 +122,7 @@ export class Universe {
 
     public getTemplateDataFromCurrUniverseState(): UniverseTemplate {
         return {
-            name: "Placehoder",
+            name: "Custom Template",
             gravitationalConstant: this.getGravitationalConstant(),
             bodies: this.bodies.map(body => {
                 return {

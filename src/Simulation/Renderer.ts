@@ -115,7 +115,7 @@ export class Renderer {
                 if(body.position.y - body.radius < limits.minY) {
                     limits.minY = body.position.y - body.radius;
                 }
-                if(body.position.x + body.radius >limits. maxX) {
+                if(body.position.x + body.radius >limits.maxX) {
                     limits.maxX = body.position.x + body.radius;
                 }
                 if(body.position.y + body.radius > limits.maxY) {
